@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor de Rangos & Calculadora CB - Cash 6-Max</title>
+  <title>Visor de Rangos & Gestor Poker - Cash 6-Max</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -112,31 +112,25 @@
       font-size: 0.75rem; border-radius: 4px; cursor: pointer;
     }
 
-    /* MÓDULO CALCULADORA FLOP */
+    /* MÓDULO 1: CALCULADORA FLOP */
     .flop-card {
       width: 100%; max-width: 500px; margin-top: 12px;
       background: var(--card-bg); border: 1px solid var(--border-color);
       border-radius: 6px; padding: 10px;
     }
 
-    .flop-title {
+    .module-title {
       font-size: 0.85rem; font-weight: bold; color: var(--accent);
-      margin-bottom: 8px; display: flex; justify-content: space-between;
+      margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
     }
 
     .card-inputs { display: flex; gap: 6px; margin-bottom: 8px; }
-
     .card-select-group { flex: 1; display: flex; gap: 2px; }
 
     .card-select-group select {
       flex: 1; background: #0f172a; color: #fff; border: 1px solid var(--border-color);
       border-radius: 4px; padding: 4px 2px; font-size: 0.75rem; font-weight: bold;
     }
-
-    .suit-s { color: #38bdf8; }
-    .suit-h { color: #ef4444; }
-    .suit-d { color: #38bdf8; }
-    .suit-c { color: #22c55e; }
 
     .flop-result {
       background: #0f172a; border-radius: 4px; padding: 8px;
@@ -147,11 +141,43 @@
       display: inline-block; padding: 2px 6px; border-radius: 3px;
       font-size: 0.65rem; font-weight: bold; margin-right: 4px; margin-bottom: 4px;
     }
-    .badge-yes { background: #22c55e; color: #000; }
-    .badge-no { background: #ef4444; color: #fff; }
     .badge-info { background: #3b82f6; color: #fff; }
 
-    /* Acordeón de Estrategia */
+    /* MÓDULO 2: GESTOR DE BET SIZING */
+    .sizing-card {
+      width: 100%; max-width: 500px; margin-top: 10px;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 6px; padding: 10px;
+    }
+
+    .pot-input-container {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+
+    .pot-input-container input {
+      width: 90px; background: #0f172a; border: 1px solid var(--accent);
+      color: #fff; font-size: 0.9rem; font-weight: bold; border-radius: 4px;
+      padding: 4px 6px; text-align: center;
+    }
+
+    .sizing-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 8px;
+    }
+
+    .sizing-box {
+      background: #0f172a; border: 1px solid var(--border-color); border-radius: 4px;
+      padding: 4px; text-align: center;
+    }
+
+    .sizing-box .pct { font-size: 0.65rem; color: #94a3b8; font-weight: bold; }
+    .sizing-box .val { font-size: 0.85rem; color: var(--accent); font-weight: bold; }
+
+    .sizing-rules {
+      font-size: 0.7rem; color: #cbd5e1; line-height: 1.3; background: #0f172a;
+      padding: 6px; border-radius: 4px; border-left: 3px solid #f59e0b;
+    }
+
+    /* Acordeón Estrategia */
     .strategy-card {
       width: 100%; max-width: 500px; margin-top: 10px;
       background: var(--card-bg); border: 1px solid var(--border-color);
@@ -215,15 +241,14 @@
     <button class="json-btn" style="color: #ef4444;" onclick="resetCurrentRange()">🗑️ Reset</button>
   </div>
 
-  <!-- CALCULADORA DE TEXTURA Y CB -->
+  <!-- MÓDULO 1: CALCULADORA FLOP -->
   <div class="flop-card">
-    <div class="flop-title">
-      <span>🎯 Asistente C-Bet de Farol (Flop)</span>
+    <div class="module-title">
+      <span>🎯 Módulo 1: Asistente C-Bet de Farol</span>
       <button style="background:none; border:none; color:var(--accent); font-size:0.7rem; cursor:pointer;" onclick="resetFlop()">Limpiar</button>
     </div>
     
     <div class="card-inputs">
-      <!-- Carta 1 -->
       <div class="card-select-group">
         <select id="c1-v" onchange="calcFlop()">
           <option value="14">A</option><option value="13">K</option><option value="12">Q</option>
@@ -236,7 +261,6 @@
           <option value="d" style="color:#38bdf8;">♦</option><option value="c" style="color:#22c55e;">♣</option>
         </select>
       </div>
-      <!-- Carta 2 -->
       <div class="card-select-group">
         <select id="c2-v" onchange="calcFlop()">
           <option value="8">8</option><option value="14">A</option><option value="13">K</option>
@@ -249,7 +273,6 @@
           <option value="d" style="color:#38bdf8;">♦</option><option value="c" style="color:#22c55e;">♣</option>
         </select>
       </div>
-      <!-- Carta 3 -->
       <div class="card-select-group">
         <select id="c3-v" onchange="calcFlop()">
           <option value="3">3</option><option value="14">A</option><option value="13">K</option>
@@ -264,8 +287,34 @@
       </div>
     </div>
 
-    <div class="flop-result" id="flop-res">
-      <!-- Resultado dinámico -->
+    <div class="flop-result" id="flop-res"></div>
+  </div>
+
+  <!-- MÓDULO 2: GESTOR DE BET SIZING -->
+  <div class="sizing-card">
+    <div class="module-title">
+      <span>📐 Módulo 2: Calculadora & Guía de Bet Sizing</span>
+    </div>
+
+    <div class="pot-input-container">
+      <span style="font-size:0.75rem;">Bote actual ($):</span>
+      <input type="number" id="pot-size" value="0.25" step="0.05" oninput="calcSizings()">
+    </div>
+
+    <div class="sizing-grid">
+      <div class="sizing-box"><div class="pct">25% (Pequeña)</div><div class="val" id="s-25">$0.06</div></div>
+      <div class="sizing-box"><div class="pct">33% (1/3 Pot)</div><div class="val" id="s-33">$0.08</div></div>
+      <div class="sizing-box"><div class="pct">50% (1/2 Pot)</div><div class="val" id="s-50">$0.13</div></div>
+      <div class="sizing-box"><div class="pct">66% (2/3 Pot)</div><div class="val" id="s-66">$0.17</div></div>
+      <div class="sizing-box"><div class="pct">75% (3/4 Pot)</div><div class="val" id="s-75">$0.19</div></div>
+      <div class="sizing-box"><div class="pct">100% (Pot)</div><div class="val" id="s-100">$0.25</div></div>
+    </div>
+
+    <div class="sizing-rules">
+      <b>Guía Rápida de Tamaños:</b><br>
+      • <b>33% (1/3):</b> Flops secos (AXX, KXX), CB de Farol estándar o Botes 3Bet.<br>
+      • <b>66% - 75%:</b> Flops húmedos/coordinados, Manos Fuertes buscando protección.<br>
+      • <b>75% - 100%:</b> Vs Jugadores Recreacionales (*Fish*) cuando tenemos Mano Fuerte.
     </div>
   </div>
 
@@ -280,13 +329,13 @@
       <ul>
         <li><b>Fuerte (TP Kicker J+ o mejor):</b> Apuesta por valor siempre (1/2 a 3/4 pot).</li>
         <li><b>Showdown Value (TP Kicker ≤T, 2ª/3ª pareja):</b> ¡NUNCA apostar! Jugar Check-Call.</li>
-        <li><b>Nada / Proyectos:</b> C-Bet de farol si el flop cumple los criterios del asistente arriba o si tenemos Proyecto (FD/OESD).</li>
+        <li><b>Nada / Proyectos:</b> C-Bet de farol si cumple los criterios arriba o si tenemos Proyecto (FD/OESD).</li>
       </ul>
 
       <h4>Respuesta ante Raise en Flop</h4>
       <ul>
         <li>Respetar la subida (poner al rival en Set/Mejor). Pagamos con proyectos u Overpairs solo para buscar la carta en Turn. Si en Turn no mejoramos o vuelve a apostar = <b>FOLD</b>.</li>
-        <li><b>Re-subir All-In:</b> Solo con Sets fuertes o jugadas completadas (escaleras/colores).</li>
+        <li><b>Re-subir All-In:</b> Solo con Sets fuertes o jugadas completadas.</li>
       </ul>
 
       <h4>TURN & RIVER</h4>
@@ -316,7 +365,7 @@
       },
       "3BET": {
         vsUTGMP: { "AA":"bet3","KK":"bet3","QQ":"bet3","AKs":"bet3","AKo":"bet3","AQo":"bet3","JJ":"cc","TT":"cc","99":"cc","88":"cc","77":"cc","66":"cc","55":"cc","44":"cc","33":"cc","22":"cc","AQs":"cc","AJs":"cc","ATs":"cc","KQs":"cc","KJs":"cc","QJs":"cc","JTs":"cc" },
-        vsCOBU: { "AA":"bet3","KK":"bet3","QQ":"bet3","JJ":"bet3","TT":"bet3","99":"bet3","AKs":"bet3","AQs":"bet3","AJs":"bet3","ATs":"bet3","AKo":"bet3","AQo":"bet3","KQo":"bet3","AJo":"bet3","88":"cc","77":"cc","66":"cc","55":"cc","44":"cc","33":"cc","22":"cc","KQs":"cc","KJs":"cc","KTs":"cc","QJs":"cc","QTs":"cc","JTs":"cc","T9s":"cc","98s":"cc","87s":"cc","76s":"cc","65s":"cc","54s":"cc" },
+        vsCOBU: { "AA":"bet3","KK":"bet3","QQ":"bet3","JJ":"bet3","TT":"bet3","99":"bet3","AKs":"bet3","AQs":"bet3","AJs":"bet3","ATs":"bet3","AKo":"bet3","AQo":"bet3","KQo":"bet3","AJo":"bet3","88":"cc","77":"cc","66":"cc","55":"cc","44":"cc","33":"cc","22":"cc","KQs":"cc","KJs":"cc","KTs":"cc","QJs":"cc","QTs":"cc","JTs":"cc","T9s":"cc","98s":"cc","87s":"cc","76s":"cc","65s":"cc" },
         BBvsUTGMP: { "AA":"bet3","KK":"bet3","QQ":"bet3","AKs":"bet3","AKo":"bet3","JJ":"cc","TT":"cc","99":"cc","88":"cc","77":"cc","66":"cc","55":"cc","44":"cc","33":"cc","22":"cc","AQs":"cc","AJs":"cc","ATs":"cc","A9s":"cc","A8s":"cc","A7s":"cc","A6s":"cc","A5s":"cc","A4s":"cc","A3s":"cc","A2s":"cc","KQs":"cc","KJs":"cc","KTs":"cc","QJs":"cc","QTs":"cc","JTs":"cc","T9s":"cc","98s":"cc","87s":"cc","76s":"cc","65s":"cc","54s":"cc","AQo":"cc","AJo":"cc","ATo":"cc","KQo":"cc" },
         BBvsCOBUSB: { "AA":"bet3","KK":"bet3","QQ":"bet3","JJ":"bet3","TT":"bet3","99":"bet3","AKs":"bet3","AQs":"bet3","AJs":"bet3","ATs":"bet3","AKo":"bet3","AQo":"bet3","AJo":"bet3","ATo":"bet3","KQo":"bet3","88":"cc","77":"cc","66":"cc","55":"cc","44":"cc","33":"cc","22":"cc","A9s":"cc","A8s":"cc","A7s":"cc","A6s":"cc","A5s":"cc","A4s":"cc","A3s":"cc","A2s":"cc","KQs":"cc","KJs":"cc","KTs":"cc","K9s":"cc","QJs":"cc","QTs":"cc","JTs":"cc","T9s":"cc","98s":"cc","87s":"cc","76s":"cc","65s":"cc","54s":"cc","43s":"cc","32s":"cc" }
       }
@@ -326,9 +375,7 @@
 
     function loadSavedData() {
       const saved = localStorage.getItem('poker_ranges_v2');
-      if (saved) {
-        try { db = JSON.parse(saved); } catch(e) {}
-      }
+      if (saved) { try { db = JSON.parse(saved); } catch(e) {} }
     }
 
     function saveData() { localStorage.setItem('poker_ranges_v2', JSON.stringify(db)); }
@@ -339,20 +386,16 @@
       const toolbar = document.getElementById('toolbar');
 
       if (isEditMode) {
-        btn.classList.add('active');
-        btn.innerText = '✔️ Finalizar';
-        toolbar.style.display = 'flex';
-        setupToolbar();
+        btn.classList.add('active'); btn.innerText = '✔️ Finalizar';
+        toolbar.style.display = 'flex'; setupToolbar();
       } else {
-        btn.classList.remove('active');
-        btn.innerText = '✏️ Editar';
+        btn.classList.remove('active'); btn.innerText = '✏️ Editar';
         toolbar.style.display = 'none';
       }
     }
 
     function setupToolbar() {
-      const toolbar = document.getElementById('toolbar');
-      toolbar.innerHTML = '';
+      const toolbar = document.getElementById('toolbar'); toolbar.innerHTML = '';
       let options = (mode === 'OR') ? [
         { label: 'OR', class: 'or', bg: 'var(--color-or)' },
         { label: 'Call 3B', class: 'call3bet', bg: 'var(--color-call3bet)' },
@@ -371,21 +414,17 @@
         b.innerText = opt.label; b.style.backgroundColor = opt.bg;
         b.onclick = () => {
           document.querySelectorAll('.paint-btn').forEach(el => el.classList.remove('selected'));
-          b.classList.add('selected');
-          selectedColorClass = opt.class;
+          b.classList.add('selected'); selectedColorClass = opt.class;
         };
         toolbar.appendChild(b);
       });
       selectedColorClass = options[0].class;
     }
 
-    function getCurrentMap() {
-      return (mode === 'OR') ? db.OR[orPos] : db['3BET'][bet3Pos];
-    }
+    function getCurrentMap() { return (mode === 'OR') ? db.OR[orPos] : db['3BET'][bet3Pos]; }
 
     function generateMatrix() {
-      const container = document.getElementById('matrix');
-      container.innerHTML = '';
+      const container = document.getElementById('matrix'); container.innerHTML = '';
       const currentMap = getCurrentMap();
 
       for (let i = 0; i < 13; i++) {
@@ -404,8 +443,7 @@
     }
 
     function applyPaint(combo, cell) {
-      const currentMap = getCurrentMap();
-      cell.className = 'cell';
+      const currentMap = getCurrentMap(); cell.className = 'cell';
       if (selectedColorClass === 'fold') delete currentMap[combo];
       else { cell.classList.add(selectedColorClass); currentMap[combo] = selectedColorClass; }
       saveData();
@@ -438,15 +476,13 @@
       icon.innerText = isOpen ? '▲' : '▼';
     }
 
-    function exportData() {
-      navigator.clipboard.writeText(JSON.stringify(db, null, 2)).then(() => alert("✅ Copiado al portapapeles."));
-    }
+    function exportData() { navigator.clipboard.writeText(JSON.stringify(db, null, 2)).then(() => alert("✅ Copiado.")); }
 
     function importData() {
-      const input = prompt("Pega tu JSON aquí:");
+      const input = prompt("Pega tu JSON:");
       if (input) {
         try { db = JSON.parse(input); saveData(); generateMatrix(); alert("✅ Cargado."); }
-        catch (e) { alert("❌ JSON no válido."); }
+        catch (e) { alert("❌ Error JSON."); }
       }
     }
 
@@ -470,7 +506,7 @@
       const suits = [s1, s2, s3];
 
       const maxVal = vals[0];
-      const isHighCard = maxVal >= 11; // J, Q, K, A
+      const isHighCard = maxVal >= 11;
       const isPaired = (vals[0] === vals[1] || vals[1] === vals[2]);
       
       const suitCounts = {};
@@ -478,12 +514,9 @@
       const maxSuitCount = Math.max(...Object.values(suitCounts));
       const isMonotone = (maxSuitCount === 3);
 
-      // Criterios de CB Bluff según tu estrategia
       const allowBluff = isHighCard || isPaired || isMonotone;
 
-      let html = '';
-      let badges = '';
-
+      let html = ''; let badges = '';
       if (isHighCard) badges += `<span class="badge badge-info">Flop Alto (${getRankChar(maxVal)}XX)</span>`;
       if (isPaired) badges += `<span class="badge badge-info">Carta Doblada</span>`;
       if (isMonotone) badges += `<span class="badge badge-info">Monocolor</span>`;
@@ -494,12 +527,11 @@
       if (allowBluff) {
         let size = "1/3 Pot (Poca inversión)";
         if (!isPaired && !isMonotone && (vals[0] - vals[2] <= 4)) size = "1/2 a 2/3 Pot (Tablero coordinado)";
-
         html += `<div style="color: #22c55e; font-weight: bold; margin-top: 4px;">✅ HAGA CB DE FAROL (Si no conectó nada)</div>`;
         html += `<div style="margin-top:2px;"><b>Sizing de Farol sugerido:</b> ${size}</div>`;
       } else {
         html += `<div style="color: #ef4444; font-weight: bold; margin-top: 4px;">❌ NO HAGA CB DE FAROL</div>`;
-        html += `<div style="margin-top:2px;">Solo apueste si tiene <b>Mano Fuerte</b> (TP Kicker J+ / Overpair / Set) o <b>Proyecto real (FD/OESD)</b>. Si tiene aire o Showdown Value, juegue <b>CHECK</b>.</div>`;
+        html += `<div style="margin-top:2px;">Solo apueste si tiene <b>Mano Fuerte</b> o <b>Proyecto real (FD/OESD)</b>. Si tiene aire o Showdown Value, juegue <b>CHECK</b>.</div>`;
       }
 
       document.getElementById('flop-res').innerHTML = html;
@@ -517,10 +549,22 @@
       calcFlop();
     }
 
+    // LÓGICA CALCULADORA BET SIZING
+    function calcSizings() {
+      const pot = parseFloat(document.getElementById('pot-size').value) || 0;
+      document.getElementById('s-25').innerText = '$' + (pot * 0.25).toFixed(2);
+      document.getElementById('s-33').innerText = '$' + (pot * 0.33).toFixed(2);
+      document.getElementById('s-50').innerText = '$' + (pot * 0.50).toFixed(2);
+      document.getElementById('s-66').innerText = '$' + (pot * 0.66).toFixed(2);
+      document.getElementById('s-75').innerText = '$' + (pot * 0.75).toFixed(2);
+      document.getElementById('s-100').innerText = '$' + pot.toFixed(2);
+    }
+
     // Inicialización
     loadSavedData();
     generateMatrix();
     calcFlop();
+    calcSizings();
   </script>
 </body>
 </html>
