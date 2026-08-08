@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor de Rangos & Gestor Poker - Cash 6-Max</title>
+  <title>Visor de Rangos & Tracker - Cash 6-Max</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -112,9 +112,9 @@
       font-size: 0.75rem; border-radius: 4px; cursor: pointer;
     }
 
-    /* MÓDULO 1: CALCULADORA FLOP */
-    .flop-card {
-      width: 100%; max-width: 500px; margin-top: 12px;
+    /* ESTILOS COMUNES MÓDULOS */
+    .module-card {
+      width: 100%; max-width: 500px; margin-top: 10px;
       background: var(--card-bg); border: 1px solid var(--border-color);
       border-radius: 6px; padding: 10px;
     }
@@ -124,6 +124,7 @@
       margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;
     }
 
+    /* MÓDULO 1: CALCULADORA FLOP */
     .card-inputs { display: flex; gap: 6px; margin-bottom: 8px; }
     .card-select-group { flex: 1; display: flex; gap: 2px; }
 
@@ -144,37 +145,52 @@
     .badge-info { background: #3b82f6; color: #fff; }
 
     /* MÓDULO 2: GESTOR DE BET SIZING */
-    .sizing-card {
-      width: 100%; max-width: 500px; margin-top: 10px;
-      background: var(--card-bg); border: 1px solid var(--border-color);
-      border-radius: 6px; padding: 10px;
-    }
-
-    .pot-input-container {
-      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
-    }
-
+    .pot-input-container { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
     .pot-input-container input {
       width: 90px; background: #0f172a; border: 1px solid var(--accent);
       color: #fff; font-size: 0.9rem; font-weight: bold; border-radius: 4px;
       padding: 4px 6px; text-align: center;
     }
 
-    .sizing-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 8px;
-    }
-
-    .sizing-box {
-      background: #0f172a; border: 1px solid var(--border-color); border-radius: 4px;
-      padding: 4px; text-align: center;
-    }
-
+    .sizing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-bottom: 8px; }
+    .sizing-box { background: #0f172a; border: 1px solid var(--border-color); border-radius: 4px; padding: 4px; text-align: center; }
     .sizing-box .pct { font-size: 0.65rem; color: #94a3b8; font-weight: bold; }
     .sizing-box .val { font-size: 0.85rem; color: var(--accent); font-weight: bold; }
 
     .sizing-rules {
       font-size: 0.7rem; color: #cbd5e1; line-height: 1.3; background: #0f172a;
       padding: 6px; border-radius: 4px; border-left: 3px solid #f59e0b;
+    }
+
+    /* MÓDULO 3: DIARIO / TRACKER */
+    .tracker-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px;
+    }
+
+    .stat-box {
+      background: #0f172a; border: 1px solid var(--border-color); border-radius: 4px; padding: 6px; text-align: center;
+    }
+    .stat-lbl { font-size: 0.65rem; color: #94a3b8; font-weight: bold; }
+    .stat-val { font-size: 0.9rem; font-weight: bold; color: #fff; }
+
+    .tracker-form { display: flex; flex-direction: column; gap: 6px; background: #0f172a; padding: 8px; border-radius: 4px; }
+    .form-row { display: flex; gap: 6px; }
+    .form-group { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .form-group label { font-size: 0.65rem; color: #cbd5e1; }
+    .form-group input, .form-group select {
+      background: #1e293b; border: 1px solid var(--border-color); color: #fff;
+      padding: 4px; font-size: 0.75rem; border-radius: 4px;
+    }
+
+    .save-session-btn {
+      background: #22c55e; color: #000; border: none; padding: 6px; font-weight: bold;
+      font-size: 0.75rem; border-radius: 4px; cursor: pointer; margin-top: 4px;
+    }
+
+    .history-list { margin-top: 8px; max-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+    .history-item {
+      background: #0f172a; padding: 4px 6px; border-radius: 4px; font-size: 0.7rem;
+      display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #38bdf8;
     }
 
     /* Acordeón Estrategia */
@@ -242,7 +258,7 @@
   </div>
 
   <!-- MÓDULO 1: CALCULADORA FLOP -->
-  <div class="flop-card">
+  <div class="module-card">
     <div class="module-title">
       <span>🎯 Módulo 1: Asistente C-Bet de Farol</span>
       <button style="background:none; border:none; color:var(--accent); font-size:0.7rem; cursor:pointer;" onclick="resetFlop()">Limpiar</button>
@@ -291,9 +307,9 @@
   </div>
 
   <!-- MÓDULO 2: GESTOR DE BET SIZING -->
-  <div class="sizing-card">
+  <div class="module-card">
     <div class="module-title">
-      <span>📐 Módulo 2: Calculadora & Guía de Bet Sizing</span>
+      <span>📐 Módulo 2: Calculadora de Bet Sizing</span>
     </div>
 
     <div class="pot-input-container">
@@ -315,6 +331,56 @@
       • <b>33% (1/3):</b> Flops secos (AXX, KXX), CB de Farol estándar o Botes 3Bet.<br>
       • <b>66% - 75%:</b> Flops húmedos/coordinados, Manos Fuertes buscando protección.<br>
       • <b>75% - 100%:</b> Vs Jugadores Recreacionales (*Fish*) cuando tenemos Mano Fuerte.
+    </div>
+  </div>
+
+  <!-- MÓDULO 3: DIARIO / TRACKER RÁPIDO DE SESIONES -->
+  <div class="module-card">
+    <div class="module-title">
+      <span>📊 Módulo 3: Tracker & Diario de Sesiones</span>
+    </div>
+
+    <div class="tracker-stats">
+      <div class="stat-box">
+        <div class="stat-lbl">Cajas Totales</div>
+        <div class="stat-val" id="st-cajas">0.0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-lbl">Manos Jugadas</div>
+        <div class="stat-val" id="st-manos">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-lbl">Winrate Est.</div>
+        <div class="stat-val" id="st-winrate">0.0 <span style="font-size:0.6rem;">bb/100</span></div>
+      </div>
+    </div>
+
+    <div class="tracker-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Manos / Pistas:</label>
+          <input type="number" id="tr-manos" placeholder="ej. 350" value="300">
+        </div>
+        <div class="form-group">
+          <label>Resultado (Cajas +/-):</label>
+          <input type="number" id="tr-cajas" step="0.5" placeholder="ej. +1.5 o -1" value="1.0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Estado Mental / Cansancio:</label>
+          <select id="tr-estado">
+            <option value="🟢 Fresco">🟢 Fresco / Enfocado</option>
+            <option value="🟡 Cansado">🟡 Cansado (Post-Trabajo)</option>
+            <option value="🔴 Agotado">🔴 Agotado / Desconcentrado</option>
+          </select>
+        </div>
+      </div>
+      <button class="save-session-btn" onclick="saveSession()">➕ Guardar Sesión</button>
+    </div>
+
+    <div class="history-list" id="history-container">
+      <!-- Sesiones anteriores -->
     </div>
   </div>
 
@@ -372,13 +438,18 @@
     };
 
     let db = JSON.parse(JSON.stringify(initialData));
+    let sessions = [];
 
     function loadSavedData() {
       const saved = localStorage.getItem('poker_ranges_v2');
       if (saved) { try { db = JSON.parse(saved); } catch(e) {} }
+
+      const savedSess = localStorage.getItem('poker_sessions_v1');
+      if (savedSess) { try { sessions = JSON.parse(savedSess); } catch(e) {} }
     }
 
     function saveData() { localStorage.setItem('poker_ranges_v2', JSON.stringify(db)); }
+    function saveSessionsData() { localStorage.setItem('poker_sessions_v1', JSON.stringify(sessions)); }
 
     function toggleEditMode() {
       isEditMode = !isEditMode;
@@ -560,11 +631,69 @@
       document.getElementById('s-100').innerText = '$' + pot.toFixed(2);
     }
 
+    // LÓGICA TRACKER SESIONES
+    function saveSession() {
+      const manos = parseInt(document.getElementById('tr-manos').value) || 0;
+      const cajas = parseFloat(document.getElementById('tr-cajas').value) || 0;
+      const estado = document.getElementById('tr-estado').value;
+
+      if (manos <= 0) { alert("Ingresa un número válido de manos."); return; }
+
+      const dateStr = new Date().toLocaleDateString('es-ES', { day:'2-digit', month:'2-digit' });
+
+      sessions.unshift({ date: dateStr, manos, cajas, estado });
+      saveSessionsData();
+      renderTracker();
+    }
+
+    function deleteSession(index) {
+      if (confirm("¿Eliminar este registro de sesión?")) {
+        sessions.splice(index, 1);
+        saveSessionsData();
+        renderTracker();
+      }
+    }
+
+    function renderTracker() {
+      let totCajas = 0;
+      let totManos = 0;
+
+      const container = document.getElementById('history-container');
+      container.innerHTML = '';
+
+      sessions.forEach((s, idx) => {
+        totCajas += s.cajas;
+        totManos += s.manos;
+
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        
+        const sign = s.cajas >= 0 ? '+' : '';
+        const color = s.cajas >= 0 ? '#22c55e' : '#ef4444';
+
+        item.innerHTML = `
+          <span><b>${s.date}</b>: ${s.manos} manos | <span style="color:${color}; font-weight:bold;">${sign}${s.cajas} cajas</span> (${s.estado})</span>
+          <button style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer;" onclick="deleteSession(${idx})">✕</button>
+        `;
+        container.appendChild(item);
+      });
+
+      document.getElementById('st-cajas').innerText = (totCajas >= 0 ? '+' : '') + totCajas.toFixed(1);
+      document.getElementById('st-cajas').style.color = totCajas >= 0 ? '#22c55e' : '#ef4444';
+      document.getElementById('st-manos').innerText = totManos;
+
+      // Cálculo de winrate acumulado en bb/100 (Asumiendo 1 caja = 100bb)
+      const winrate = totManos > 0 ? ((totCajas * 100) / (totManos / 100)) : 0;
+      document.getElementById('st-winrate').innerText = (winrate >= 0 ? '+' : '') + winrate.toFixed(1);
+      document.getElementById('st-winrate').style.color = winrate >= 0 ? '#22c55e' : '#ef4444';
+    }
+
     // Inicialización
     loadSavedData();
     generateMatrix();
     calcFlop();
     calcSizings();
+    renderTracker();
   </script>
 </body>
 </html>
