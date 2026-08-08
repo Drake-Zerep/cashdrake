@@ -34,7 +34,7 @@
     p.subtitle { font-size: 0.75rem; color: #94a3b8; margin-top: 2px; }
 
     .nav-link {
-      display: inline-block; margin-top: 6px; font-size: 0.75rem;
+      display: inline-block; margin-top: 6px; font-size: 0.8rem;
       color: var(--accent); text-decoration: none; font-weight: bold;
     }
 
@@ -58,16 +58,16 @@
     .quiz-scenario { font-size: 0.85rem; margin-bottom: 8px; line-height: 1.4; }
     .quiz-hand { font-size: 1.1rem; font-weight: bold; color: var(--accent); margin: 6px 0; }
 
-    .quiz-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; margin-top: 10px; }
+    .quiz-options { display: grid; grid-template-columns: repeat(1, 1fr); gap: 6px; margin-top: 10px; }
 
     .quiz-btn {
       background: var(--card-bg); border: 1px solid var(--border-color);
-      color: #fff; padding: 8px 4px; font-size: 0.75rem; font-weight: bold;
-      border-radius: 4px; cursor: pointer;
+      color: #fff; padding: 10px; font-size: 0.8rem; font-weight: bold;
+      border-radius: 4px; cursor: pointer; text-align: left;
     }
 
     .quiz-feedback {
-      margin-top: 10px; font-size: 0.8rem; padding: 6px; border-radius: 4px; display: none;
+      margin-top: 10px; font-size: 0.8rem; padding: 8px; border-radius: 4px; display: none; text-align: left; line-height: 1.3;
     }
 
     /* ÁRBOLES DE DECISIÓN VISUALES */
@@ -86,13 +86,18 @@
     .tag-strong { background: var(--success); color: #000; }
     .tag-sd { background: var(--warning); color: #000; }
     .tag-nothing { background: var(--danger); color: #fff; }
+
+    /* TABLA RESUMEN */
+    .summary-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; margin-top: 6px; }
+    .summary-table th, .summary-table td { border: 1px solid var(--border-color); padding: 6px; text-align: left; }
+    .summary-table th { background: #0f172a; color: var(--accent); }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>🧠 Entrenador & Centro de Estudio</h1>
-    <p class="subtitle">Estrategia Visual Postflop & Test de Memorización</p>
+    <h1>🧠 Centro de Estudio PokerStrategy</h1>
+    <p class="subtitle">Estrategia Básica Postflop & Test de Escenarios</p>
     <a href="index.html" class="nav-link">← Volver al Visor de Juego en Vivo</a>
   </header>
 
@@ -102,74 +107,102 @@
     <div class="quiz-box">
       <div class="quiz-scenario" id="q-scenario">Cargando escenario...</div>
       <div class="quiz-hand" id="q-hand">--</div>
-      <div class="quiz-options" id="q-options">
-        <!-- Opciones dinámicas -->
-      </div>
+      <div class="quiz-options" id="q-options"></div>
       <div class="quiz-feedback" id="q-feedback"></div>
-      <button class="quiz-btn" style="width:100%; margin-top:8px; background:var(--accent); color:#000;" onclick="nextQuestion()">Siguiente Escenario ➔</button>
+      <button class="quiz-btn" style="width:100%; margin-top:8px; background:var(--accent); color:#000; text-align:center;" onclick="nextQuestion()">Siguiente Escenario ➔</button>
     </div>
   </div>
 
-  <!-- MÓDULO 2: ÁRBOLES DE DECISIÓN POSTFLOP VISUALES -->
+  <!-- MÓDULO 2: TABLA DE DIAGNÓSTICO RÁPIDO -->
   <div class="section-card">
-    <div class="section-title">🌳 Diagrama de Flujo Postflop (Memorización)</div>
+    <div class="section-title">📋 Clasificación de Manos en el Flop</div>
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Tipo de Mano</th>
+          <th>Criterio Exacto</th>
+          <th>Línea a Seguir</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b style="color:var(--success);">Mano Fuerte</b></td>
+          <td>Top Pair con Kicker J+ (ej. AQ en A83), Overpair o Set.</td>
+          <td><b>Apuesta de Continuación (CB)</b> por valor siempre (1/2 a 3/4 Pot).</td>
+        </tr>
+        <tr>
+          <td><b style="color:var(--warning);">Showdown Value</b></td>
+          <td>Top Pair con Kicker ≤10 (ej. A9 en A83), 2ª o 3ª pareja.</td>
+          <td><b>CHECK / CALL</b>. ¡Nunca apostar! Dejar que el rival farolee.</td>
+        </tr>
+        <tr>
+          <td><b style="color:var(--danger);">Absolutamente Nada</b></td>
+          <td>Carta alta sin pareja ni proyectos significativos.</td>
+          <td><b>CB de Farol</b> SOLO si el Flop es AXX, KXX, QXX, JXX, Doblado o Monocolor. De lo contrario, <b>Check-Fold</b>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MÓDULO 3: ÁRBOLES DE DECISIÓN POSTFLOP -->
+  <div class="section-card">
+    <div class="section-title">🌳 Árbol de Decisiones (Turn & River)</div>
 
     <div class="tree-node" style="border-color: var(--success);">
-      <h4>1. Categorización en Flop</h4>
+      <h4>Juego en el Turn (2º Barrel)</h4>
       <ul>
-        <li><span class="badge-tag tag-strong">Mano Fuerte</span> Top Pair con Kicker J o mejor / Overpair / Set. $\rightarrow$ <b>Acción:</b> Apuesta por valor siempre ($1/2$ a $3/4$ pot).</li>
-        <li><span class="badge-tag tag-sd">Showdown Value</span> Top Pair con Kicker $\le 10$ / 2ª o 3ª pareja. $\rightarrow$ <b>Acción:</b> ¡NUNCA APOSTAR! Check-Call.</li>
-        <li><span class="badge-tag tag-nothing">Nada / Aire</span> Sin pareja ni proyectos. $\rightarrow$ <b>Acción:</b> C-Bet de farol SOLO si el Flop es AXX, KXX, QXX, JXX, Monocolor o Doblado.</li>
+        <li><b>Mano Fuerte:</b> Vuelve a apostar por valor si la carta no completa un proyecto evidente.</li>
+        <li><b>Mano que pasa a Showdown Value:</b> Si el Turn completa una carta superior (ej. tenías JJ y cae un As) $\rightarrow$ Pasar a Check-Call.</li>
+        <li><b>CB de Farol que no ligó nada:</b> Resignar la mano y jugar Check-Fold.</li>
       </ul>
     </div>
 
     <div class="tree-node" style="border-color: var(--warning);">
-      <h4>2. Respuesta ante Subida (Raise) del Rival</h4>
+      <h4>Respuesta ante Raise (Subida del Rival)</h4>
       <ul>
-        <li><b>Regla de Oro:</b> En microlímites, un Raise representa Set o superior.</li>
-        <li><b>Acción:</b> Fold instantáneo salvo que tengas proyectos limpios o vayas a buscar la carta del Turn. Si el Turn no mejora $\rightarrow$ <b>FOLD</b>.</li>
-      </ul>
-    </div>
-
-    <div class="tree-node" style="border-color: var(--accent);">
-      <h4>3. Decisiones en Turn & River</h4>
-      <ul>
-        <li><b>2º / 3º Barrel:</b> Solo con Manos Fuertes que mantengan su valor o proyectos completados.</li>
-        <li><b>Transición a Showdown Value:</b> Si tu mano pierde fuerza (ej. se completa un color/escalera posible) $\rightarrow$ Pasar a modo Check-Call o Check-Behind.</li>
+        <li>En microlímites, una subida del rival representa **Set o superior** la gran mayoría de las veces.</li>
+        <li><b>Con Top Pair / Overpair:</b> Call en Flop para buscar la carta del Turn. Si en Turn no mejoramos o vuelve a apostar $\rightarrow$ <b>FOLD</b>.</li>
+        <li><b>Con Sets Fuertes / Escalera / Color:</b> Re-subir y pagar el All-In.</li>
       </ul>
     </div>
   </div>
 
   <script>
-    // Base de datos de preguntas de práctica
     const questions = [
       {
         scenario: "Haces OR en BTN y te paga la BB. Flop: A♠ - 8♥ - 3♣",
-        hand: "Mano: K♠ Q♠ (No ligaste nada)",
-        options: ["C-Bet de Farol (1/3 Pot)", "Check / Pass", "Apuesta 3/4 Pot"],
+        hand: "Tu Mano: A♦ Q♦",
+        options: ["Apuesta por Valor (CB 1/2 a 2/3 Pot)", "Check-Call (Mano de Showdown)", "Check-Fold"],
         correct: 0,
-        explain: "<b>Correcto:</b> Es un Flop AXX (Alto/Seco). Debes hacer C-Bet de farol a 1/3 de pot."
+        explain: "<b>Correcto:</b> Tienes Top Pair con Kicker Q (mayor o igual a J). Es una Mano Fuerte, debes apostar por valor."
       },
       {
-        scenario: "Haces OR en CO y te paga la BB. Flop: K♦ - J♣ - 4♠",
-        hand: "Mano: K♠ 9♠ (Top Pair con Kicker 9)",
-        options: ["Apuesta por Valor", "Check-Call (Mano de Showdown)", "Fold"],
+        scenario: "Haces OR en BTN y te paga la BB. Flop: A♠ - 8♥ - 3♣",
+        hand: "Tu Mano: A♥ 9♥",
+        options: ["Apuesta por Valor", "Check-Call (Mano de Showdown)", "CB de Farol"],
         correct: 1,
-        explain: "<b>Correcto:</b> Es Top Pair pero con Kicker ≤ 10. Es mano de Showdown Value: ¡Jamás se apesta! Se juega Check-Call."
+        explain: "<b>Correcto:</b> Tienes Top Pair pero tu Kicker es 9 (menor a J). Pasa a ser Mano de Showdown Value: ¡Jamás se apuesta! Se juega Check-Call."
       },
       {
-        scenario: "Haces OR en MP y te paga el BU. Flop: 7♥ - 6♥ - 2♣",
-        hand: "Mano: A♦ Q♦ (Carta alta As)",
-        options: ["C-Bet de Farol", "Check-Fold", "Apuesta Pot"],
+        scenario: "Haces OR en CO y te paga el BU. Flop: K♦ - 7♠ - 2♣",
+        hand: "Tu Mano: Q♠ J♠ (No ligaste nada)",
+        options: ["CB de Farol (1/3 Pot)", "Check-Fold", "Apuesta Bote Completo"],
+        correct: 0,
+        explain: "<b>Correcto:</b> No tienes nada, pero el Flop es KXX (Alto y seco). Se hace CB de Farol a 1/3 de pot."
+      },
+      {
+        scenario: "Haces OR en MP y te paga la BB. Flop: 8♠ - 7♦ - 4♣",
+        hand: "Tu Mano: Q♥ J♥ (No ligaste nada)",
+        options: ["CB de Farol", "Check-Fold", "Apuesta 3/4 Pot"],
         correct: 1,
-        explain: "<b>Correcto:</b> Flop bajo y coordinado. No es AXX, KXX, QXX, JXX ni doblado/monocolor. No se farolea: Check-Fold."
+        explain: "<b>Correcto:</b> Es un Flop bajo y coordinado. No cumple las condiciones de AXX, KXX, QXX, JXX, doblado o monocolor. Se juega Check-Fold."
       },
       {
-        scenario: "Haces C-Bet en Flop J♠ - 8♦ - 3♣ con A♠ J♠ y un desconocido te hace Raise grande.",
-        hand: "Mano: Top Pair Kicker As",
-        options: ["All-In directos", "Call por valor", "Fold / Respetar el Raise"],
-        correct: 2,
-        explain: "<b>Correcto:</b> Ante un Raise de un desconocido en NL2, su rango son Sets/Dobles. Instafold con TP."
+        scenario: "Haces C-Bet con K♠ K♦ en Flop J♠ - 6♦ - 2♣ y un rival desconocido te hace Raise.",
+        hand: "Tu Mano: Overpair (Rival hace Raise)",
+        options: ["All-In Inmediato", "Call en Flop para evaluar Turn (Fold si no cae K y él vuelve a apostar)", "Fold Directo"],
+        correct: 1,
+        explain: "<b>Correcto:</b> El rival se pone en Set. Haces Call para ver si en Turn cae el Rey milagroso. Si no mejora y el rival vuelve a apostar, foldeas."
       }
     ];
 
@@ -186,7 +219,7 @@
       q.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
         btn.className = 'quiz-btn';
-        btn.innerText = opt;
+        btn.innerText = (idx + 1) + ". " + opt;
         btn.onclick = () => checkAnswer(idx);
         optContainer.appendChild(btn);
       });
@@ -215,7 +248,6 @@
       renderQuestion();
     }
 
-    // Inicializar
     renderQuestion();
   </script>
 </body>
