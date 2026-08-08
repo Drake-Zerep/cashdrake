@@ -48,116 +48,53 @@
       cursor: pointer;
     }
 
-    .edit-toggle-btn.active {
-      background: #22c55e;
-      color: #fff;
-    }
+    .edit-toggle-btn.active { background: #22c55e; color: #fff; }
 
-    .nav-tabs {
-      display: flex;
-      gap: 6px;
-      width: 100%;
-      max-width: 500px;
-      margin-bottom: 8px;
-    }
+    .nav-tabs { display: flex; gap: 6px; width: 100%; max-width: 500px; margin-bottom: 8px; }
 
     .tab-btn {
-      flex: 1;
-      padding: 8px 4px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-color);
-      font-size: 0.8rem;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
+      flex: 1; padding: 8px 4px; background: var(--card-bg);
+      border: 1px solid var(--border-color); color: var(--text-color);
+      font-size: 0.8rem; font-weight: bold; border-radius: 6px; cursor: pointer;
     }
 
-    .tab-btn.active {
-      background: var(--accent);
-      color: #0f172a;
-      border-color: var(--accent);
-    }
+    .tab-btn.active { background: var(--accent); color: #0f172a; border-color: var(--accent); }
 
-    .controls {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      width: 100%;
-      max-width: 500px;
-      margin-bottom: 8px;
-    }
-
+    .controls { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 500px; margin-bottom: 8px; }
     .sub-group { display: flex; gap: 4px; }
 
     .btn {
-      flex: 1;
-      padding: 6px 2px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-color);
-      font-size: 0.75rem;
-      border-radius: 4px;
-      cursor: pointer;
+      flex: 1; padding: 6px 2px; background: var(--card-bg);
+      border: 1px solid var(--border-color); color: var(--text-color);
+      font-size: 0.75rem; border-radius: 4px; cursor: pointer;
     }
 
-    .btn.active {
-      border-color: var(--accent);
-      background: #0284c7;
-      color: #fff;
-    }
+    .btn.active { border-color: var(--accent); background: #0284c7; color: #fff; }
 
     .editor-toolbar {
-      display: none;
-      flex-wrap: wrap;
-      gap: 6px;
-      width: 100%;
-      max-width: 500px;
-      background: #1e293b;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid #f59e0b;
-      margin-bottom: 8px;
+      display: none; flex-wrap: wrap; gap: 6px; width: 100%; max-width: 500px;
+      background: #1e293b; padding: 8px; border-radius: 6px;
+      border: 1px solid #f59e0b; margin-bottom: 8px;
     }
 
     .paint-btn {
-      flex: 1;
-      min-width: 65px;
-      padding: 6px 2px;
-      border: 2px solid transparent;
-      color: #fff;
-      font-size: 0.7rem;
-      font-weight: bold;
-      border-radius: 4px;
-      cursor: pointer;
-      text-align: center;
+      flex: 1; min-width: 65px; padding: 6px 2px; border: 2px solid transparent;
+      color: #fff; font-size: 0.7rem; font-weight: bold; border-radius: 4px;
+      cursor: pointer; text-align: center;
     }
 
     .paint-btn.selected { border-color: #fff; box-shadow: 0 0 6px #fff; }
 
     .matrix-container {
-      width: 100%;
-      max-width: 500px;
-      aspect-ratio: 1;
-      display: grid;
-      grid-template-columns: repeat(13, 1fr);
-      grid-template-rows: repeat(13, 1fr);
-      gap: 2px;
-      background-color: var(--border-color);
-      padding: 2px;
-      border-radius: 6px;
+      width: 100%; max-width: 500px; aspect-ratio: 1; display: grid;
+      grid-template-columns: repeat(13, 1fr); grid-template-rows: repeat(13, 1fr);
+      gap: 2px; background-color: var(--border-color); padding: 2px; border-radius: 6px;
     }
 
     .cell {
-      background-color: var(--color-fold);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.65rem;
-      font-weight: bold;
-      border-radius: 2px;
-      color: #fff;
-      cursor: pointer;
+      background-color: var(--color-fold); display: flex; align-items: center;
+      justify-content: center; font-size: 0.65rem; font-weight: bold;
+      border-radius: 2px; color: #fff; cursor: pointer;
     }
 
     .cell.or { background-color: var(--color-or); color: #000; }
@@ -167,24 +104,34 @@
     .cell.bet3 { background-color: var(--color-bet3); }
     .cell.cc { background-color: var(--color-cc); }
 
-    .json-actions {
-      display: flex;
-      gap: 6px;
-      width: 100%;
-      max-width: 500px;
-      margin-top: 10px;
-    }
+    .json-actions { display: flex; gap: 6px; width: 100%; max-width: 500px; margin-top: 10px; }
 
     .json-btn {
-      flex: 1;
-      padding: 6px;
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      color: var(--text-color);
-      font-size: 0.75rem;
-      border-radius: 4px;
-      cursor: pointer;
+      flex: 1; padding: 6px; background: var(--card-bg);
+      border: 1px solid var(--border-color); color: var(--text-color);
+      font-size: 0.75rem; border-radius: 4px; cursor: pointer;
     }
+
+    /* Acordeón de Estrategia */
+    .strategy-card {
+      width: 100%; max-width: 500px; margin-top: 12px;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 6px; overflow: hidden;
+    }
+
+    .strategy-header {
+      padding: 10px; background: #1e293b; font-weight: bold;
+      font-size: 0.85rem; cursor: pointer; display: flex;
+      justify-content: space-between; color: var(--accent);
+    }
+
+    .strategy-content {
+      padding: 10px; font-size: 0.75rem; line-height: 1.4;
+      display: none; border-top: 1px solid var(--border-color);
+    }
+
+    .strategy-content ul { padding-left: 15px; margin-bottom: 8px; }
+    .strategy-content h4 { color: #f59e0b; margin: 6px 0 2px 0; }
   </style>
 </head>
 <body>
@@ -224,9 +171,38 @@
   <div class="matrix-container" id="matrix"></div>
 
   <div class="json-actions">
-    <button class="json-btn" onclick="exportData()">💾 Guardar Backup</button>
-    <button class="json-btn" onclick="importData()">📂 Cargar Backup</button>
-    <button class="json-btn" style="color: #ef4444;" onclick="resetCurrentRange()">🗑️ Reset Posición</button>
+    <button class="json-btn" onclick="exportData()">💾 Backup</button>
+    <button class="json-btn" onclick="importData()">📂 Cargar</button>
+    <button class="json-btn" style="color: #ef4444;" onclick="resetCurrentRange()">🗑️ Reset</button>
+  </div>
+
+  <!-- Desplegable Estrategia -->
+  <div class="strategy-card">
+    <div class="strategy-header" onclick="toggleStrategy()">
+      <span>📘 Estrategia Postflop Integrada</span>
+      <span id="strat-icon">▲</span>
+    </div>
+    <div class="strategy-content" id="strat-body">
+      <h4>FLOP - Tipos de Mano</h4>
+      <ul>
+        <li><b>Fuerte (TP Kicker J+ o mejor):</b> Apuesta por valor siempre (1/2 a 3/4 pot).</li>
+        <li><b>Showdown Value (TP Kicker ≤T, 2ª/3ª pareja):</b> ¡NUNCA apostar! Jugar Check-Call.</li>
+        <li><b>Nada / Proyectos:</b> C-Bet de farol si el flop es AXX, KXX, QXX, JXX, Monocolor, Doblado o si tenemos Proyecto (FD/OESD).</li>
+      </ul>
+
+      <h4>Respuesta ante Raise en Flop</h4>
+      <ul>
+        <li>Respetar la subida (poner al rival en Set/Mejor). Pagamos con proyectos u Overpairs solo para buscar la carta en Turn. Si en Turn no mejoramos o vuelve a apostar = <b>FOLD</b>.</li>
+        <li><b>Re-subir All-In:</b> Solo con Sets fuertes o jugadas completadas (escaleras/colores).</li>
+      </ul>
+
+      <h4>TURN & RIVER</h4>
+      <ul>
+        <li><b>2º Barrel:</b> Con Manos Fuertes que no empeoren o proyectos completados.</li>
+        <li><b>3º Barrel:</b> Apuesta por Valor con Manos Fuertes si no se completaron proyectos del rival.</li>
+        <li><b>Si empeora a Showdown Value:</b> Check-Behind (con pos) o Check-Call (sin pos).</li>
+      </ul>
+    </div>
   </div>
 
   <script>
@@ -238,7 +214,6 @@
     let isEditMode = false;
     let selectedColorClass = 'or';
 
-    // RANGOS INICIALES PRE-CARGADOS
     const initialData = {
       OR: {
         UTG: { "AA":"bet4","KK":"bet4","QQ":"bet4","JJ":"bet4","AKs":"bet4","AKo":"bet4","AQs":"call3bet","AJs":"call3bet","ATs":"call3bet","KQs":"call3bet","KJs":"call3bet","QJs":"call3bet","JTs":"call3bet","TT":"call3bet","99":"call3bet","88":"call3bet","77":"call3bet","66":"call3bet","55":"call3bet","44":"call3bet","33":"call3bet","22":"call3bet","A9s":"or","A8s":"or","A7s":"or","A6s":"or","A5s":"or","A4s":"or","A3s":"or","A2s":"or","KTs":"or","QTs":"or","T9s":"or","98s":"or","87s":"or","76s":"or","65s":"or","54s":"or","AQo":"or","AJo":"or","ATo":"or" },
@@ -263,9 +238,7 @@
       }
     }
 
-    function saveData() {
-      localStorage.setItem('poker_ranges_v2', JSON.stringify(db));
-    }
+    function saveData() { localStorage.setItem('poker_ranges_v2', JSON.stringify(db)); }
 
     function toggleEditMode() {
       isEditMode = !isEditMode;
@@ -287,29 +260,22 @@
     function setupToolbar() {
       const toolbar = document.getElementById('toolbar');
       toolbar.innerHTML = '';
-
-      let options = [];
-      if (mode === 'OR') {
-        options = [
-          { label: 'OR', class: 'or', bg: 'var(--color-or)' },
-          { label: 'Call 3B', class: 'call3bet', bg: 'var(--color-call3bet)' },
-          { label: '4Bet Val', class: 'bet4', bg: 'var(--color-bet4)' },
-          { label: '4Bet Blf', class: 'bet4bluff', bg: 'var(--color-bet4bluff)' },
-          { label: 'Fold', class: 'fold', bg: 'var(--color-fold)' }
-        ];
-      } else {
-        options = [
-          { label: '3Bet', class: 'bet3', bg: 'var(--color-bet3)' },
-          { label: 'Cold Call', class: 'cc', bg: 'var(--color-cc)' },
-          { label: 'Fold', class: 'fold', bg: 'var(--color-fold)' }
-        ];
-      }
+      let options = (mode === 'OR') ? [
+        { label: 'OR', class: 'or', bg: 'var(--color-or)' },
+        { label: 'Call 3B', class: 'call3bet', bg: 'var(--color-call3bet)' },
+        { label: '4Bet Val', class: 'bet4', bg: 'var(--color-bet4)' },
+        { label: '4Bet Blf', class: 'bet4bluff', bg: 'var(--color-bet4bluff)' },
+        { label: 'Fold', class: 'fold', bg: 'var(--color-fold)' }
+      ] : [
+        { label: '3Bet', class: 'bet3', bg: 'var(--color-bet3)' },
+        { label: 'Cold Call', class: 'cc', bg: 'var(--color-cc)' },
+        { label: 'Fold', class: 'fold', bg: 'var(--color-fold)' }
+      ];
 
       options.forEach((opt, idx) => {
         const b = document.createElement('button');
         b.className = 'paint-btn' + (idx === 0 ? ' selected' : '');
-        b.innerText = opt.label;
-        b.style.backgroundColor = opt.bg;
+        b.innerText = opt.label; b.style.backgroundColor = opt.bg;
         b.onclick = () => {
           document.querySelectorAll('.paint-btn').forEach(el => el.classList.remove('selected'));
           b.classList.add('selected');
@@ -321,8 +287,7 @@
     }
 
     function getCurrentMap() {
-      if (mode === 'OR') return db.OR[orPos];
-      return db['3BET'][bet3Pos];
+      return (mode === 'OR') ? db.OR[orPos] : db['3BET'][bet3Pos];
     }
 
     function generateMatrix() {
@@ -334,20 +299,12 @@
         for (let j = 0; j < 13; j++) {
           let combo = i === j ? ranks[i] + ranks[j] : (i < j ? ranks[i] + ranks[j] + 's' : ranks[j] + ranks[i] + 'o');
           const cell = document.createElement('div');
-          cell.className = 'cell';
-          cell.innerText = combo;
+          cell.className = 'cell'; cell.innerText = combo;
 
           const action = currentMap[combo];
-          if (action && action !== 'fold') {
-            cell.classList.add(action);
-          }
+          if (action && action !== 'fold') cell.classList.add(action);
 
-          cell.onclick = () => {
-            if (isEditMode) {
-              applyPaint(combo, cell);
-            }
-          };
-
+          cell.onclick = () => { if (isEditMode) applyPaint(combo, cell); };
           container.appendChild(cell);
         }
       }
@@ -356,13 +313,8 @@
     function applyPaint(combo, cell) {
       const currentMap = getCurrentMap();
       cell.className = 'cell';
-
-      if (selectedColorClass === 'fold') {
-        delete currentMap[combo];
-      } else {
-        cell.classList.add(selectedColorClass);
-        currentMap[combo] = selectedColorClass;
-      }
+      if (selectedColorClass === 'fold') delete currentMap[combo];
+      else { cell.classList.add(selectedColorClass); currentMap[combo] = selectedColorClass; }
       saveData();
     }
 
@@ -370,65 +322,48 @@
       mode = m;
       document.getElementById('tab-or').classList.toggle('active', mode === 'OR');
       document.getElementById('tab-3bet').classList.toggle('active', mode === '3BET');
-
       document.getElementById('controls-or').style.display = (mode === 'OR') ? 'flex' : 'none';
       document.getElementById('controls-3bet').style.display = (mode === '3BET') ? 'flex' : 'none';
-
       if(isEditMode) setupToolbar();
       generateMatrix();
     }
 
-    function setOrPos(pos) {
-      orPos = pos;
-      updateActiveBtn('controls-or', pos);
-      generateMatrix();
-    }
-
-    function set3BetPos(pos) {
-      bet3Pos = pos;
-      updateActiveBtn('controls-3bet', pos);
-      generateMatrix();
-    }
+    function setOrPos(pos) { orPos = pos; updateActiveBtn('controls-or', pos); generateMatrix(); }
+    function set3BetPos(pos) { bet3Pos = pos; updateActiveBtn('controls-3bet', pos); generateMatrix(); }
 
     function updateActiveBtn(containerId, val) {
-      const btns = document.querySelectorAll(`#${containerId} .btn`);
-      btns.forEach(b => {
-        if (b.getAttribute('onclick').includes(val)) b.classList.add('active');
-        else b.classList.remove('active');
+      document.querySelectorAll(`#${containerId} .btn`).forEach(b => {
+        b.classList.toggle('active', b.getAttribute('onclick').includes(val));
       });
+    }
+
+    function toggleStrategy() {
+      const body = document.getElementById('strat-body');
+      const icon = document.getElementById('strat-icon');
+      const isOpen = body.style.display === 'block';
+      body.style.display = isOpen ? 'none' : 'block';
+      icon.innerText = isOpen ? '▲' : '▼';
     }
 
     function exportData() {
-      const dataStr = JSON.stringify(db, null, 2);
-      navigator.clipboard.writeText(dataStr).then(() => {
-        alert("✅ Configuración copiada al portapapeles.");
-      });
+      navigator.clipboard.writeText(JSON.stringify(db, null, 2)).then(() => alert("✅ Copiado al portapapeles."));
     }
 
     function importData() {
-      const input = prompt("Pega aquí el código JSON guardado:");
+      const input = prompt("Pega tu JSON aquí:");
       if (input) {
-        try {
-          db = JSON.parse(input);
-          saveData();
-          generateMatrix();
-          alert("✅ Cargado correctamente.");
-        } catch (e) {
-          alert("❌ Código no válido.");
-        }
+        try { db = JSON.parse(input); saveData(); generateMatrix(); alert("✅ Cargado."); }
+        catch (e) { alert("❌ JSON no válido."); }
       }
     }
 
     function resetCurrentRange() {
       if (confirm("¿Limpiar esta posición?")) {
-        if (mode === 'OR') db.OR[orPos] = {};
-        else db['3BET'][bet3Pos] = {};
-        saveData();
-        generateMatrix();
+        if (mode === 'OR') db.OR[orPos] = {}; else db['3BET'][bet3Pos] = {};
+        saveData(); generateMatrix();
       }
     }
 
-    // Inicialización
     loadSavedData();
     generateMatrix();
   </script>
