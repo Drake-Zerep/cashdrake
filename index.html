@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor de Rangos - Cash 6-Max</title>
+  <title>Visor de Rangos & Calculadora CB - Cash 6-Max</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -11,13 +11,13 @@
       --text-color: #f8fafc;
       --accent: #38bdf8;
       
-      --color-or: #38bdf8;        /* Azul claro */
-      --color-call3bet: #1d4ed8;  /* Azul oscuro */
-      --color-bet4: #f59e0b;      /* Naranja */
-      --color-bet4bluff: #ef4444; /* Rojo */
-      --color-bet3: #ef4444;      /* Rojo */
-      --color-cc: #2563eb;        /* Azul Cold Call */
-      --color-fold: #334155;      /* Gris Fold */
+      --color-or: #38bdf8;
+      --color-call3bet: #1d4ed8;
+      --color-bet4: #f59e0b;
+      --color-bet4bluff: #ef4444;
+      --color-bet3: #ef4444;
+      --color-cc: #2563eb;
+      --color-fold: #334155;
       --border-color: #475569;
     }
 
@@ -112,9 +112,48 @@
       font-size: 0.75rem; border-radius: 4px; cursor: pointer;
     }
 
+    /* MÓDULO CALCULADORA FLOP */
+    .flop-card {
+      width: 100%; max-width: 500px; margin-top: 12px;
+      background: var(--card-bg); border: 1px solid var(--border-color);
+      border-radius: 6px; padding: 10px;
+    }
+
+    .flop-title {
+      font-size: 0.85rem; font-weight: bold; color: var(--accent);
+      margin-bottom: 8px; display: flex; justify-content: space-between;
+    }
+
+    .card-inputs { display: flex; gap: 6px; margin-bottom: 8px; }
+
+    .card-select-group { flex: 1; display: flex; gap: 2px; }
+
+    .card-select-group select {
+      flex: 1; background: #0f172a; color: #fff; border: 1px solid var(--border-color);
+      border-radius: 4px; padding: 4px 2px; font-size: 0.75rem; font-weight: bold;
+    }
+
+    .suit-s { color: #38bdf8; }
+    .suit-h { color: #ef4444; }
+    .suit-d { color: #38bdf8; }
+    .suit-c { color: #22c55e; }
+
+    .flop-result {
+      background: #0f172a; border-radius: 4px; padding: 8px;
+      border-left: 3px solid var(--accent); font-size: 0.75rem; line-height: 1.3;
+    }
+
+    .badge {
+      display: inline-block; padding: 2px 6px; border-radius: 3px;
+      font-size: 0.65rem; font-weight: bold; margin-right: 4px; margin-bottom: 4px;
+    }
+    .badge-yes { background: #22c55e; color: #000; }
+    .badge-no { background: #ef4444; color: #fff; }
+    .badge-info { background: #3b82f6; color: #fff; }
+
     /* Acordeón de Estrategia */
     .strategy-card {
-      width: 100%; max-width: 500px; margin-top: 12px;
+      width: 100%; max-width: 500px; margin-top: 10px;
       background: var(--card-bg); border: 1px solid var(--border-color);
       border-radius: 6px; overflow: hidden;
     }
@@ -176,7 +215,61 @@
     <button class="json-btn" style="color: #ef4444;" onclick="resetCurrentRange()">🗑️ Reset</button>
   </div>
 
-  <!-- Desplegable Estrategia -->
+  <!-- CALCULADORA DE TEXTURA Y CB -->
+  <div class="flop-card">
+    <div class="flop-title">
+      <span>🎯 Asistente C-Bet de Farol (Flop)</span>
+      <button style="background:none; border:none; color:var(--accent); font-size:0.7rem; cursor:pointer;" onclick="resetFlop()">Limpiar</button>
+    </div>
+    
+    <div class="card-inputs">
+      <!-- Carta 1 -->
+      <div class="card-select-group">
+        <select id="c1-v" onchange="calcFlop()">
+          <option value="14">A</option><option value="13">K</option><option value="12">Q</option>
+          <option value="11">J</option><option value="10">T</option><option value="9">9</option>
+          <option value="8">8</option><option value="7">7</option><option value="6">6</option>
+          <option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option>
+        </select>
+        <select id="c1-s" onchange="calcFlop()">
+          <option value="s">♠</option><option value="h" style="color:#ef4444;">♥</option>
+          <option value="d" style="color:#38bdf8;">♦</option><option value="c" style="color:#22c55e;">♣</option>
+        </select>
+      </div>
+      <!-- Carta 2 -->
+      <div class="card-select-group">
+        <select id="c2-v" onchange="calcFlop()">
+          <option value="8">8</option><option value="14">A</option><option value="13">K</option>
+          <option value="12">Q</option><option value="11">J</option><option value="10">T</option>
+          <option value="9">9</option><option value="7">7</option><option value="6">6</option>
+          <option value="5">5</option><option value="4">4</option><option value="3">3</option><option value="2">2</option>
+        </select>
+        <select id="c2-s" onchange="calcFlop()">
+          <option value="h" style="color:#ef4444;">♥</option><option value="s">♠</option>
+          <option value="d" style="color:#38bdf8;">♦</option><option value="c" style="color:#22c55e;">♣</option>
+        </select>
+      </div>
+      <!-- Carta 3 -->
+      <div class="card-select-group">
+        <select id="c3-v" onchange="calcFlop()">
+          <option value="3">3</option><option value="14">A</option><option value="13">K</option>
+          <option value="12">Q</option><option value="11">J</option><option value="10">T</option>
+          <option value="9">9</option><option value="8">8</option><option value="7">7</option>
+          <option value="6">6</option><option value="5">5</option><option value="4">4</option><option value="2">2</option>
+        </select>
+        <select id="c3-s" onchange="calcFlop()">
+          <option value="c" style="color:#22c55e;">♣</option><option value="s">♠</option>
+          <option value="h" style="color:#ef4444;">♥</option><option value="d" style="color:#38bdf8;">♦</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flop-result" id="flop-res">
+      <!-- Resultado dinámico -->
+    </div>
+  </div>
+
+  <!-- DESPLEGABLE ESTRATEGIA -->
   <div class="strategy-card">
     <div class="strategy-header" onclick="toggleStrategy()">
       <span>📘 Estrategia Postflop Integrada</span>
@@ -187,7 +280,7 @@
       <ul>
         <li><b>Fuerte (TP Kicker J+ o mejor):</b> Apuesta por valor siempre (1/2 a 3/4 pot).</li>
         <li><b>Showdown Value (TP Kicker ≤T, 2ª/3ª pareja):</b> ¡NUNCA apostar! Jugar Check-Call.</li>
-        <li><b>Nada / Proyectos:</b> C-Bet de farol si el flop es AXX, KXX, QXX, JXX, Monocolor, Doblado o si tenemos Proyecto (FD/OESD).</li>
+        <li><b>Nada / Proyectos:</b> C-Bet de farol si el flop cumple los criterios del asistente arriba o si tenemos Proyecto (FD/OESD).</li>
       </ul>
 
       <h4>Respuesta ante Raise en Flop</h4>
@@ -364,8 +457,70 @@
       }
     }
 
+    // LÓGICA CALCULADORA FLOP
+    function calcFlop() {
+      const v1 = parseInt(document.getElementById('c1-v').value);
+      const s1 = document.getElementById('c1-s').value;
+      const v2 = parseInt(document.getElementById('c2-v').value);
+      const s2 = document.getElementById('c2-s').value;
+      const v3 = parseInt(document.getElementById('c3-v').value);
+      const s3 = document.getElementById('c3-s').value;
+
+      const vals = [v1, v2, v3].sort((a,b) => b-a);
+      const suits = [s1, s2, s3];
+
+      const maxVal = vals[0];
+      const isHighCard = maxVal >= 11; // J, Q, K, A
+      const isPaired = (vals[0] === vals[1] || vals[1] === vals[2]);
+      
+      const suitCounts = {};
+      suits.forEach(s => suitCounts[s] = (suitCounts[s] || 0) + 1);
+      const maxSuitCount = Math.max(...Object.values(suitCounts));
+      const isMonotone = (maxSuitCount === 3);
+
+      // Criterios de CB Bluff según tu estrategia
+      const allowBluff = isHighCard || isPaired || isMonotone;
+
+      let html = '';
+      let badges = '';
+
+      if (isHighCard) badges += `<span class="badge badge-info">Flop Alto (${getRankChar(maxVal)}XX)</span>`;
+      if (isPaired) badges += `<span class="badge badge-info">Carta Doblada</span>`;
+      if (isMonotone) badges += `<span class="badge badge-info">Monocolor</span>`;
+      if (!isHighCard && !isPaired && !isMonotone) badges += `<span class="badge badge-info">Flop Bajo / Coordinado</span>`;
+
+      html += `<div>${badges}</div>`;
+
+      if (allowBluff) {
+        let size = "1/3 Pot (Poca inversión)";
+        if (!isPaired && !isMonotone && (vals[0] - vals[2] <= 4)) size = "1/2 a 2/3 Pot (Tablero coordinado)";
+
+        html += `<div style="color: #22c55e; font-weight: bold; margin-top: 4px;">✅ HAGA CB DE FAROL (Si no conectó nada)</div>`;
+        html += `<div style="margin-top:2px;"><b>Sizing de Farol sugerido:</b> ${size}</div>`;
+      } else {
+        html += `<div style="color: #ef4444; font-weight: bold; margin-top: 4px;">❌ NO HAGA CB DE FAROL</div>`;
+        html += `<div style="margin-top:2px;">Solo apueste si tiene <b>Mano Fuerte</b> (TP Kicker J+ / Overpair / Set) o <b>Proyecto real (FD/OESD)</b>. Si tiene aire o Showdown Value, juegue <b>CHECK</b>.</div>`;
+      }
+
+      document.getElementById('flop-res').innerHTML = html;
+    }
+
+    function getRankChar(v) {
+      if(v===14) return 'A'; if(v===13) return 'K'; if(v===12) return 'Q'; if(v===11) return 'J'; if(v===10) return 'T';
+      return v.toString();
+    }
+
+    function resetFlop() {
+      document.getElementById('c1-v').value = "14"; document.getElementById('c1-s').value = "s";
+      document.getElementById('c2-v').value = "8";  document.getElementById('c2-s').value = "h";
+      document.getElementById('c3-v').value = "3";  document.getElementById('c3-s').value = "c";
+      calcFlop();
+    }
+
+    // Inicialización
     loadSavedData();
     generateMatrix();
+    calcFlop();
   </script>
 </body>
 </html>
