@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor y Editor de Rangos - Cash 6-Max</title>
+  <title>Visor de Rangos - Cash 6-Max</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -11,7 +11,6 @@
       --text-color: #f8fafc;
       --accent: #38bdf8;
       
-      /* Colores Acciones */
       --color-or: #38bdf8;        /* Azul claro */
       --color-call3bet: #1d4ed8;  /* Azul oscuro */
       --color-bet4: #f59e0b;      /* Naranja */
@@ -42,8 +41,8 @@
       background: #f59e0b;
       color: #000;
       border: none;
-      padding: 4px 10px;
-      font-size: 0.75rem;
+      padding: 6px 12px;
+      font-size: 0.8rem;
       font-weight: bold;
       border-radius: 4px;
       cursor: pointer;
@@ -108,7 +107,6 @@
       color: #fff;
     }
 
-    /* Panel de herramientas de edición */
     .editor-toolbar {
       display: none;
       flex-wrap: wrap;
@@ -124,7 +122,7 @@
 
     .paint-btn {
       flex: 1;
-      min-width: 70px;
+      min-width: 65px;
       padding: 6px 2px;
       border: 2px solid transparent;
       color: #fff;
@@ -135,7 +133,7 @@
       text-align: center;
     }
 
-    .paint-btn.selected { border-color: #fff; box-shadow: 0 0 5px #fff; }
+    .paint-btn.selected { border-color: #fff; box-shadow: 0 0 6px #fff; }
 
     .matrix-container {
       width: 100%;
@@ -148,7 +146,6 @@
       background-color: var(--border-color);
       padding: 2px;
       border-radius: 6px;
-      touch-action: none;
     }
 
     .cell {
@@ -160,11 +157,12 @@
       font-weight: bold;
       border-radius: 2px;
       color: #fff;
+      cursor: pointer;
     }
 
-    .cell.or { background-color: var(--color-or); }
+    .cell.or { background-color: var(--color-or); color: #000; }
     .cell.call3bet { background-color: var(--color-call3bet); }
-    .cell.bet4 { background-color: var(--color-bet4); }
+    .cell.bet4 { background-color: var(--color-bet4); color: #000; }
     .cell.bet4bluff { background-color: var(--color-bet4bluff); }
     .cell.bet3 { background-color: var(--color-bet3); }
     .cell.cc { background-color: var(--color-cc); }
@@ -198,13 +196,11 @@
     </h1>
   </header>
 
-  <!-- Pestañas Principales -->
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="setMode('OR')">Aperturas (OR)</button>
-    <button class="tab-btn" onclick="setMode('3BET')">3Bet / Cold Call</button>
+    <button class="tab-btn active" id="tab-or" onclick="setMode('OR')">Aperturas (OR)</button>
+    <button class="tab-btn" id="tab-3bet" onclick="setMode('3BET')">3Bet / Cold Call</button>
   </div>
 
-  <!-- Posiciones OR -->
   <div class="controls" id="controls-or">
     <div class="sub-group">
       <button class="btn active" onclick="setOrPos('UTG')">UTG</button>
@@ -214,7 +210,6 @@
     </div>
   </div>
 
-  <!-- Posiciones 3BET / CC -->
   <div class="controls" id="controls-3bet" style="display: none;">
     <div class="sub-group">
       <button class="btn active" onclick="set3BetPos('vsUTGMP')">vs UTG/MP</button>
@@ -224,17 +219,12 @@
     </div>
   </div>
 
-  <!-- Barra de Herramientas de Edición -->
-  <div class="editor-toolbar" id="toolbar">
-    <!-- Se llena dinámicamente según el modo -->
-  </div>
+  <div class="editor-toolbar" id="toolbar"></div>
 
-  <!-- Matriz de Rangos -->
   <div class="matrix-container" id="matrix"></div>
 
-  <!-- Herramientas de Backup -->
   <div class="json-actions">
-    <button class="json-btn" onclick="exportData()">💾 Guardar Backup (Copiar JSON)</button>
+    <button class="json-btn" onclick="exportData()">💾 Guardar Backup</button>
     <button class="json-btn" onclick="importData()">📂 Cargar Backup</button>
     <button class="json-btn" style="color: #ef4444;" onclick="resetCurrentRange()">🗑️ Reset Posición</button>
   </div>
@@ -247,28 +237,34 @@
     let bet3Pos = 'vsUTGMP';
     let isEditMode = false;
     let selectedColorClass = 'or';
-    let isMouseDown = false;
 
-    // Estructura Vacía/Base de Datos
-    let db = {
+    // RANGOS INICIALES PRE-CARGADOS
+    const initialData = {
       OR: {
-        UTG: {}, MP: {}, CO: {}, BU: {}
+        UTG: { "AA":"bet4","KK":"bet4","QQ":"bet4","JJ":"bet4","AKs":"bet4","AKo":"bet4","AQs":"call3bet","AJs":"call3bet","ATs":"call3bet","KQs":"call3bet","KJs":"call3bet","QJs":"call3bet","JTs":"call3bet","TT":"call3bet","99":"call3bet","88":"call3bet","77":"call3bet","66":"call3bet","55":"call3bet","44":"call3bet","33":"call3bet","22":"call3bet","A9s":"or","A8s":"or","A7s":"or","A6s":"or","A5s":"or","A4s":"or","A3s":"or","A2s":"or","KTs":"or","QTs":"or","T9s":"or","98s":"or","87s":"or","76s":"or","65s":"or","54s":"or","AQo":"or","AJo":"or","ATo":"or" },
+        MP: { "AA":"bet4","KK":"bet4","QQ":"bet4","JJ":"bet4","AKs":"bet4","AKo":"bet4","AQs":"call3bet","AJs":"call3bet","ATs":"call3bet","KQs":"call3bet","KJs":"call3bet","QJs":"call3bet","JTs":"call3bet","TT":"call3bet","99":"call3bet","88":"call3bet","77":"call3bet","66":"call3bet","55":"call3bet","A9s":"or","A8s":"or","A7s":"or","A6s":"or","A5s":"or","A4s":"or","A3s":"or","A2s":"or","KTs":"or","QTs":"or","T9s":"or","98s":"or","87s":"or","76s":"or","65s":"or","54s":"or","AQo":"or","AJo":"or","ATo":"or","44":"or","33":"or","22":"or" },
+        CO: { "AA":"bet4","KK":"bet4","QQ":"bet4","AKs":"bet4","AKo":"bet4","JJ":"call3bet","TT":"call3bet","99":"call3bet","88":"call3bet","77":"call3bet","66":"call3bet","55":"call3bet","44":"call3bet","33":"call3bet","22":"call3bet","AQs":"call3bet","AJs":"call3bet","ATs":"call3bet","A9s":"call3bet","KQs":"call3bet","KJs":"call3bet","KTs":"call3bet","QJs":"call3bet","QTs":"call3bet","JTs":"call3bet","T9s":"call3bet","98s":"call3bet","87s":"call3bet","76s":"call3bet","65s":"call3bet","54s":"call3bet","AQo":"call3bet","AJo":"call3bet","A8s":"or","A7s":"or","A6s":"or","A5s":"or","A4s":"or","A3s":"or","A2s":"or","ATo":"or","KQo":"or" },
+        BU: { "AA":"bet4","KK":"bet4","QQ":"bet4","AKs":"bet4","AKo":"bet4","AJo":"bet4bluff","KJo":"bet4bluff","JJ":"call3bet","TT":"call3bet","99":"call3bet","88":"call3bet","77":"call3bet","66":"call3bet","55":"call3bet","44":"call3bet","33":"call3bet","22":"call3bet","AQs":"call3bet","AJs":"call3bet","ATs":"call3bet","A9s":"call3bet","KQs":"call3bet","KJs":"call3bet","KTs":"call3bet","QJs":"call3bet","QTs":"call3bet","JTs":"call3bet","T9s":"call3bet","98s":"call3bet","87s":"call3bet","76s":"call3bet","65s":"call3bet","54s":"call3bet","AQo":"call3bet","A8s":"or","A7s":"or","A6s":"or","A5s":"or","A4s":"or","A3s":"or","A2s":"or","ATo":"or","KQo":"or" }
       },
-      3BET: {
-        vsUTGMP: {}, vsCOBU: {}, BBvsUTGMP: {}, BBvsCOBUSB: {}
+      "3BET": {
+        vsUTGMP: { "AA":"bet3","KK":"bet3","QQ":"bet3","AKs":"bet3","AKo":"bet3","AQo":"bet3","JJ":"cc","TT":"cc","99":"cc","88":"cc","77":"cc","66":"cc","55":"cc","44":"cc","33":"cc","22":"cc","AQs":"cc","AJs":"cc","ATs":"cc","KQs":"cc","KJs":"cc","QJs":"cc","JTs":"cc" },
+        vsCOBU: { "AA":"bet3","KK":"bet3","QQ":"bet3","JJ":"bet3","TT":"bet3","99":"bet3","AKs":"bet3","AQs":"bet3","AJs":"bet3","ATs":"bet3","AKo":"bet3","AQo":"bet3","KQo":"bet3","AJo":"bet3","88":"cc","77":"cc","66":"cc","55":"cc","44":"cc","33":"cc","22":"cc","KQs":"cc","KJs":"cc","KTs":"cc","QJs":"cc","QTs":"cc","JTs":"cc","T9s":"cc","98s":"cc","87s":"cc","76s":"cc","65s":"cc","54s":"cc" },
+        BBvsUTGMP: { "AA":"bet3","KK":"bet3","QQ":"bet3","AKs":"bet3","AKo":"bet3","JJ":"cc","TT":"cc","99":"cc","88":"cc","77":"cc","66":"cc","55":"cc","44":"cc","33":"cc","22":"cc","AQs":"cc","AJs":"cc","ATs":"cc","A9s":"cc","A8s":"cc","A7s":"cc","A6s":"cc","A5s":"cc","A4s":"cc","A3s":"cc","A2s":"cc","KQs":"cc","KJs":"cc","KTs":"cc","QJs":"cc","QTs":"cc","JTs":"cc","T9s":"cc","98s":"cc","87s":"cc","76s":"cc","65s":"cc","54s":"cc","AQo":"cc","AJo":"cc","ATo":"cc","KQo":"cc" },
+        BBvsCOBUSB: { "AA":"bet3","KK":"bet3","QQ":"bet3","JJ":"bet3","TT":"bet3","99":"bet3","AKs":"bet3","AQs":"bet3","AJs":"bet3","ATs":"bet3","AKo":"bet3","AQo":"bet3","AJo":"bet3","ATo":"bet3","KQo":"bet3","88":"cc","77":"cc","66":"cc","55":"cc","44":"cc","33":"cc","22":"cc","A9s":"cc","A8s":"cc","A7s":"cc","A6s":"cc","A5s":"cc","A4s":"cc","A3s":"cc","A2s":"cc","KQs":"cc","KJs":"cc","KTs":"cc","K9s":"cc","QJs":"cc","QTs":"cc","JTs":"cc","T9s":"cc","98s":"cc","87s":"cc","76s":"cc","65s":"cc","54s":"cc","43s":"cc","32s":"cc" }
       }
     };
 
-    // Cargar de LocalStorage si existe
+    let db = JSON.parse(JSON.stringify(initialData));
+
     function loadSavedData() {
-      const saved = localStorage.getItem('poker_ranges_db');
+      const saved = localStorage.getItem('poker_ranges_v2');
       if (saved) {
         try { db = JSON.parse(saved); } catch(e) {}
       }
     }
 
     function saveData() {
-      localStorage.setItem('poker_ranges_db', JSON.stringify(db));
+      localStorage.setItem('poker_ranges_v2', JSON.stringify(db));
     }
 
     function toggleEditMode() {
@@ -346,17 +342,16 @@
             cell.classList.add(action);
           }
 
-          // Eventos para pintar (Click / Arrastre táctil o ratón)
-          cell.onmousedown = () => { if(isEditMode) { isMouseDown = true; applyPaint(combo, cell); } };
-          cell.onmouseenter = () => { if(isEditMode && isMouseDown) { applyPaint(combo, cell); } };
-          cell.ontouchstart = (e) => { if(isEditMode) { applyPaint(combo, cell); } };
+          cell.onclick = () => {
+            if (isEditMode) {
+              applyPaint(combo, cell);
+            }
+          };
 
           container.appendChild(cell);
         }
       }
     }
-
-    document.body.onmouseup = () => { isMouseDown = false; };
 
     function applyPaint(combo, cell) {
       const currentMap = getCurrentMap();
@@ -373,16 +368,12 @@
 
     function setMode(m) {
       mode = m;
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
+      document.getElementById('tab-or').classList.toggle('active', mode === 'OR');
+      document.getElementById('tab-3bet').classList.toggle('active', mode === '3BET');
 
-      if (mode === 'OR') {
-        document.getElementById('controls-or').style.display = 'flex';
-        document.getElementById('controls-3bet').style.display = 'none';
-      } else {
-        document.getElementById('controls-or').style.display = 'none';
-        document.getElementById('controls-3bet').style.display = 'flex';
-      }
+      document.getElementById('controls-or').style.display = (mode === 'OR') ? 'flex' : 'none';
+      document.getElementById('controls-3bet').style.display = (mode === '3BET') ? 'flex' : 'none';
+
       if(isEditMode) setupToolbar();
       generateMatrix();
     }
@@ -410,26 +401,26 @@
     function exportData() {
       const dataStr = JSON.stringify(db, null, 2);
       navigator.clipboard.writeText(dataStr).then(() => {
-        alert("✅ Configuración copiada al portapapeles. Puedes pegarla en un bloc de notas como copia de seguridad.");
+        alert("✅ Configuración copiada al portapapeles.");
       });
     }
 
     function importData() {
-      const input = prompt("Pega aquí el código JSON guardado anteriormente:");
+      const input = prompt("Pega aquí el código JSON guardado:");
       if (input) {
         try {
           db = JSON.parse(input);
           saveData();
           generateMatrix();
-          alert("✅ Rangos cargados con éxito.");
+          alert("✅ Cargado correctamente.");
         } catch (e) {
-          alert("❌ El código no es válido.");
+          alert("❌ Código no válido.");
         }
       }
     }
 
     function resetCurrentRange() {
-      if (confirm("¿Estás seguro de borrar todas las manos asignadas en esta posición?")) {
+      if (confirm("¿Limpiar esta posición?")) {
         if (mode === 'OR') db.OR[orPos] = {};
         else db['3BET'][bet3Pos] = {};
         saveData();
@@ -437,7 +428,7 @@
       }
     }
 
-    // Inicializar
+    // Inicialización
     loadSavedData();
     generateMatrix();
   </script>
