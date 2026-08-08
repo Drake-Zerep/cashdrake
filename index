@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Estrategia y Rangos Cash 6-Max</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-color: #f8fafc;
+      --accent: #38bdf8;
+      
+      /* Colores Rangos */
+      --color-or: #38bdf8;        /* Azul claro (OR estándar) */
+      --color-call3bet: #1d4ed8;  /* Azul oscuro (Call vs 3Bet) */
+      --color-4bet: #f59e0b;      /* Naranja (4Bet Value) */
+      --color-4betbluff: #ef4444; /* Rojo (4Bet Bluff) */
+      --color-3bet: #ef4444;      /* Rojo (3Bet) */
+      --color-cc: #2563eb;        /* Azul (Cold Call) */
+      --color-fold: #334155;      /* Gris oscuro (Fold) */
+      --border-color: #475569;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+
+    header { text-align: center; margin-bottom: 10px; }
+    h1 { font-size: 1.1rem; color: var(--accent); }
+
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 10px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px 4px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      font-size: 0.8rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #0f172a;
+      border-color: var(--accent);
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 10px;
+    }
+
+    .sub-group { display: flex; gap: 4px; }
+
+    .btn {
+      flex: 1;
+      padding: 6px 2px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
+      font-size: 0.75rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn.active {
+      border-color: var(--accent);
+      background: #0284c7;
+      color: #fff;
+    }
+
+    .matrix-container {
+      width: 100%;
+      max-width: 500px;
+      aspect-ratio: 1;
+      display: grid;
+      grid-template-columns: repeat(13, 1fr);
+      grid-template-rows: repeat(13, 1fr);
+      gap: 2px;
+      background-color: var(--border-color);
+      padding: 2px;
+      border-radius: 6px;
+    }
+
+    .cell {
+      background-color: var(--color-fold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: bold;
+      border-radius: 2px;
+      color: #fff;
+    }
+
+    .cell.or { background-color: var(--color-or); }
+    .cell.call3bet { background-color: var(--color-call3bet); }
+    .cell.bet4 { background-color: var(--color-4bet); }
+    .cell.bet4bluff { background-color: var(--color-4betbluff); }
+    .cell.bet3 { background-color: var(--color-3bet); }
+    .cell.cc { background-color: var(--color-cc); }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      width: 100%;
+      max-width: 500px;
+      margin-top: 8px;
+      font-size: 0.7rem;
+    }
+
+    .legend-item { display: flex; align-items: center; gap: 4px; }
+    .legend-box { width: 12px; height: 12px; border-radius: 2px; }
+
+    /* Acordeón Estrategia */
+    .strategy-card {
+      width: 100%;
+      max-width: 500px;
+      margin-top: 15px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .strategy-header {
+      padding: 10px;
+      background: #1e293b;
+      font-weight: bold;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      color: var(--accent);
+    }
+
+    .strategy-content {
+      padding: 10px;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      display: none;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .strategy-content ul { padding-left: 15px; margin-bottom: 8px; }
+    .strategy-content h4 { color: #f59e0b; margin: 6px 0 2px 0; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Estrategia Cash 6-Max</h1>
+  </header>
+
+  <!-- Navegación Principal -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="setMode('OR')">Aperturas (OR)</button>
+    <button class="tab-btn" onclick="setMode('3BET')">3Bet / Cold Call</button>
+  </div>
+
+  <!-- Controles OR -->
+  <div class="controls" id="controls-or">
+    <div class="sub-group">
+      <button class="btn active" onclick="setOrPos('UTG')">UTG</button>
+      <button class="btn" onclick="setOrPos('MP')">MP</button>
+      <button class="btn" onclick="setOrPos('CO')">CO</button>
+      <button class="btn" onclick="setOrPos('BU')">BU</button>
+    </div>
+  </div>
+
+  <!-- Controles 3BET -->
+  <div class="controls" id="controls-3bet" style="display: none;">
+    <div class="sub-group">
+      <button class="btn active" onclick="set3BetPos('vsUTGMP')">vs UTG / MP</button>
+      <button class="btn" onclick="set3BetPos('vsCOBU')">vs CO / BU</button>
+      <button class="btn" onclick="set3BetPos('BBvsUTGMP')">BB vs UTG/MP</button>
+      <button class="btn" onclick="set3BetPos('BBvsCOBUSB')">BB vs CO/BU/SB</button>
+    </div>
+  </div>
+
+  <!-- Matriz de Rangos -->
+  <div class="matrix-container" id="matrix"></div>
+
+  <!-- Leyendas -->
+  <div class="legend" id="legend-or">
+    <div class="legend-item"><div class="legend-box" style="background: var(--color-or);"></div> Open Raise</div>
+    <div class="legend-item"><div class="legend-box" style="background: var(--color-call3bet);"></div> Call vs 3Bet</div>
+    <div class="legend-item"><div class="legend-box" style="background: var(--color-4bet);"></div> 4Bet Value</div>
+    <div class="legend-item"><div class="legend-box" style="background: var(--color-4betbluff);"></div> 4Bet Bluff</div>
+  </div>
+
+  <div class="legend" id="legend-3bet" style="display: none;">
+    <div class="legend-item"><div class="legend-box" style="background: var(--color-3bet);"></div> 3Bet</div>
+    <div class="legend-item"><div class="legend-box" style="background: var(--color-cc);"></div> Cold Call</div>
+  </div>
+
+  <!-- Resumen de Estrategia Postflop -->
+  <div class="strategy-card">
+    <div class="strategy-header" onclick="toggleStrategy()">
+      <span>Guía Estratégica Postflop</span>
+      <span id="strat-icon">▲</span>
+    </div>
+    <div class="strategy-content" id="strat-body">
+      <h4>FLOP - Categorización de Manos</h4>
+      <ul>
+        <li><b>Mano Fuerte (TP Kicker J+ o mejor):</b> Apuesta siempre por valor (1/2 a 3/4 pot).</li>
+        <li><b>Showdown Value (TP Kicker <=T, 2ª/3ª pareja):</b> ¡NUNCA APOSTAR! Jugar Check-Call.</li>
+        <li><b>Nada / Proyectos:</b> CB Bluff si el Flop es AXX, KXX, QXX, JXX, Monocolor, Doblado o si tenemos Proyecto (FD/OESD).</li>
+      </ul>
+
+      <h4>Respuesta ante Raise en Flop</h4>
+      <ul>
+        <li>Asumir Set/Mejor. Pagamos con proyectos/overpairs solo para buscar mejorar en Turn. Si el Turn no mejora o el rival vuelve a apostar = <b>FOLD</b>.</li>
+        <li><b>Subir All-In:</b> Solo con Sets fuertes o jugadas completas (escaleras/colores).</li>
+      </ul>
+
+      <h4>TURN & RIVER</h4>
+      <ul>
+        <li><b>2º Barrel:</b> Con Manos Fuertes que no empeoren o proyectos completados.</li>
+        <li><b>3º Barrel:</b> Solo por Valor con Manos Fuertes si no se completaron proyectos.</li>
+        <li><b>Mano pasa a Showdown Value:</b> Check-Behind (con pos) o Check-Call (sin pos).</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const ranks = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'];
+    
+    let mode = 'OR';
+    let orPos = 'UTG';
+    let bet3Pos = 'vsUTGMP';
+
+    // BASE DE DATOS DE RANGOS SEGÚN IMÁGENES
+    const dataOR = {
+      'UTG': {
+        or: ['AA','KK','QQ','JJ','TT','99','88','77','66','55','44','33','22','AKs','AQs','AJs','ATs','A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','87s','76s','65s','54s','AKo','AQo','AJo','ATo'],
+        call3bet: ['AQs','AJs','ATs','KQs','KJs','QJs','JTs','TT','99','88','77','66','55','44','33','22'],
+        bet4: ['AA','KK','QQ','JJ','AKs','AKo'],
+        bet4bluff: []
+      },
+      'MP': {
+        or: ['AA','KK','QQ','JJ','TT','99','88','77','66','55','44','33','22','AKs','AQs','AJs','ATs','A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','87s','76s','65s','54s','AKo','AQo','AJo','ATo'],
+        call3bet: ['AQs','AJs','ATs','KQs','KJs','QJs','JTs','TT','99','88','77','66','55'],
+        bet4: ['AA','KK','QQ','JJ','AKs','AKo'],
+        bet4bluff: []
+      },
+      'CO': {
+        or: ['AA','KK','QQ','JJ','TT','99','88','77','66','55','44','33','22','AKs','AQs','AJs','ATs','A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','87s','76s','65s','54s','AKo','AQo','AJo','ATo','KQo'],
+        call3bet: ['AQs','AJs','ATs','A9s','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','87s','76s','65s','54s','JJ','TT','99','88','77','66','55','44','33','22','AQo','AJo'],
+        bet4: ['AA','KK','QQ','AKs','AKo'],
+        bet4bluff: []
+      },
+      'BU': {
+        or: ['AA','KK','QQ','JJ','TT','99','88','77','66','55','44','33','22','AKs','AQs','AJs','ATs','A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','87s','76s','65s','54s','AKo','AQo','AJo','ATo','KQo','KJo'],
+        call3bet: ['AQs','AJs','ATs','A9s','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','87s','76s','65s','54s','JJ','TT','99','88','77','66','55','44','33','22','AQo'],
+        bet4: ['AA','KK','QQ','AKs','AKo'],
+        bet4bluff: ['AJo','KJo'] // Opción de 4Bet Bluff
+      }
+    };
+
+    const data3Bet = {
+      'vsUTGMP': {
+        bet3: ['AA','KK','QQ','AKs','AKo','AQo'],
+        cc: ['JJ','TT','99','88','77','66','55','44','33','22','AQs','AJs','ATs','KQs','KJs','QJs','JTs']
+      },
+      'vsCOBU': {
+        bet3: ['AA','KK','QQ','JJ','TT','99','AKs','AQs','AJs','ATs','AKo','AQo','KQo','AJo'],
+        cc: ['88','77','66','55','44','33','22','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','87s','76s','65s','54s']
+      },
+      'BBvsUTGMP': {
+        bet3: ['AA','KK','QQ','AKs','AKo'],
+        cc: ['JJ','TT','99','88','77','66','55','44','33','22','AQs','AJs','ATs','A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s','KQs','KJs','KTs','QJs','QTs','JTs','T9s','98s','87s','76s','65s','54s','AQo','AJo','ATo','KQo']
+      },
+      'BBvsCOBUSB': {
+        bet3: ['AA','KK','QQ','JJ','TT','99','AKs','AQs','AJs','ATs','AKo','AQo','AJo','ATo','KQo'],
+        cc: ['88','77','66','55','44','33','22','A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s','KQs','KJs','KTs','K9s','QJs','QTs','JTs','T9s','98s','87s','76s','65s','54s','43s','32s']
+      }
+    };
+
+    function generateMatrix() {
+      const container = document.getElementById('matrix');
+      container.innerHTML = '';
+
+      for (let i = 0; i < 13; i++) {
+        for (let j = 0; j < 13; j++) {
+          let combo = i === j ? ranks[i] + ranks[j] : (i < j ? ranks[i] + ranks[j] + 's' : ranks[j] + ranks[i] + 'o');
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          cell.innerText = combo;
+
+          if (mode === 'OR') {
+            const current = dataOR[orPos];
+            if (current.bet4.includes(combo)) cell.classList.add('bet4');
+            else if (current.bet4bluff.includes(combo)) cell.classList.add('bet4bluff');
+            else if (current.call3bet.includes(combo)) cell.classList.add('call3bet');
+            else if (current.or.includes(combo)) cell.classList.add('or');
+          } else {
+            const current = data3Bet[bet3Pos];
+            if (current.bet3.includes(combo)) cell.classList.add('bet3');
+            else if (current.cc.includes(combo)) cell.classList.add('cc');
+          }
+
+          container.appendChild(cell);
+        }
+      }
+    }
+
+    function setMode(m) {
+      mode = m;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (mode === 'OR') {
+        document.getElementById('controls-or').style.display = 'flex';
+        document.getElementById('controls-3bet').style.display = 'none';
+        document.getElementById('legend-or').style.display = 'flex';
+        document.getElementById('legend-3bet').style.display = 'none';
+      } else {
+        document.getElementById('controls-or').style.display = 'none';
+        document.getElementById('controls-3bet').style.display = 'flex';
+        document.getElementById('legend-or').style.display = 'none';
+        document.getElementById('legend-3bet').style.display = 'flex';
+      }
+      generateMatrix();
+    }
+
+    function setOrPos(pos) {
+      orPos = pos;
+      updateActiveBtn('controls-or', pos);
+      generateMatrix();
+    }
+
+    function set3BetPos(pos) {
+      bet3Pos = pos;
+      updateActiveBtn('controls-3bet', pos);
+      generateMatrix();
+    }
+
+    function updateActiveBtn(containerId, val) {
+      const btns = document.querySelectorAll(`#${containerId} .btn`);
+      btns.forEach(b => {
+        if (b.getAttribute('onclick').includes(val)) b.classList.add('active');
+        else b.classList.remove('active');
+      });
+    }
+
+    function toggleStrategy() {
+      const body = document.getElementById('strat-body');
+      const icon = document.getElementById('strat-icon');
+      if (body.style.display === 'block') {
+        body.style.display = 'none';
+        icon.innerText = '▲';
+      } else {
+        body.style.display = 'block';
+        icon.innerText = '▼';
+      }
+    }
+
+    // Inicialización
+    generateMatrix();
+  </script>
+</body>
+</html>
