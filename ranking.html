@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ranking de Manos de Póker - Wallpaper HD</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #070a12 100%);
+      --card-bg: rgba(30, 41, 59, 0.7);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --accent-gold: #f59e0b;
+      --accent-cyan: #38bdf8;
+      --accent-purple: #a855f7;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #38bdf8, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+    }
+
+    p.subtitle {
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    @media (max-width: 650px) {
+      .grid-container { grid-template-columns: 1fr; }
+    }
+
+    .hand-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .hand-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-cyan);
+    }
+
+    .hand-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .rank-number {
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--accent-gold);
+      width: 25px;
+    }
+
+    .hand-details h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .hand-details p {
+      font-size: 0.72rem;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    /* CARTAS VISUALES */
+    .cards-display {
+      display: flex;
+      gap: 4px;
+    }
+
+    .mini-card {
+      width: 28px;
+      height: 38px;
+      background: #ffffff;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      line-height: 1;
+    }
+
+    .mini-card.red { color: #e11d48; }
+    .mini-card.black { color: #0f172a; }
+
+    .mini-card span.suit {
+      font-size: 0.65rem;
+      margin-top: 1px;
+    }
+
+    footer {
+      margin-top: 25px;
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>RANKING DE MANOS DE PÓKER</h1>
+    <p class="subtitle">TEXAS HOLD'EM • DE MAYOR A MENOR FUERZA</p>
+  </header>
+
+  <div class="grid-container">
+
+    <!-- 1. ESCALERA REAL -->
+    <div class="hand-card" style="border-left: 4px solid #f59e0b;">
+      <div class="hand-info">
+        <div class="rank-number">1</div>
+        <div class="hand-details">
+          <h3>Escalera Real</h3>
+          <p>A, K, Q, J, 10 del mismo palo</p>
+        </div>
+      </div>
+      <div class="cards-display">
+        <div class="mini-card red">A<span class="suit">♥</span></div>
+        <div class="mini-card red">K<span class="suit">♥</span></div>
+        <div class="mini-card red">Q<span class="suit">♥</span></div>
+        <div class="mini-card red">J<span class="suit">♥</span></div>
+        <div class="mini-card red">10<span class="suit">♥</span></div>
+      </div>
+    </div>
+
+    <!-- 2. ESCALERA DE COLOR -->
+    <div class="hand-card">
+      <div class="hand-info">
+        <div class="rank-number">2</div>
+        <div class="hand-details">
+          <h3>Escalera de Color</h3>
+          <p>5 cartas consecutivas del mismo palo</p>
+        </div>
+      </div>
+      <div class="cards-display">
+        <div class="mini-card black">9<span class="suit">♠</span></div>
+        <div class="mini-card black">8<span class="suit">♠</span></div>
+        <div class="mini-card black">7<span class="suit">♠</span></div>
+        <div class="mini-card black">6<span class="suit">♠</span></div>
+        <div class="mini-card black">5<span class="suit">♠</span></div>
+      </div>
+    </div>
+
+    <!-- 3. PÓKER -->
+    <div class="hand-card">
+      <div class="hand-info">
+        <div class="rank-number">3</div>
+        <div class="hand-details">
+          <h3>Póker (Four of a Kind)</h3>
+          <p>4 cartas del mismo valor</p>
+        </div>
+      </div>
+      <div class="cards-display">
+        <div class="mini-card red">J<span class="suit">♦</span></div>
+        <div class="mini-card black">J<span class="suit">♣</span></div>
+        <div class="mini-card red">J<span class="suit">♥</span></div>
+        <div class="mini-card black">J<span class="suit">♠</span></div>
+        <div class="mini-card red">7<span class="suit">♦</span></div>
+      </div>
+    </div>
+
+    <!-- 4. FULL HOUSE -->
+    <div class="hand-card">
+      <div class="hand-info">
+        <div class="rank-number">4</div>
+        <div class="hand-details">
+          <h3>Full House</h3>
+          <p>Un Trío + una Pareja</p>
+        </div>
+      </div>
+      <div class="cards-display">
+        <div class="mini-card red">K<span class="suit">♥</span></div>
+        <div class="mini-card black">K<span class="suit">♠</span></div>
+        <div class="mini-card red">K<span class="suit">♦</span></div>
+        <div class="mini-card black">4<span class="suit">♣</span></div>
+        <div class="mini-card red">4<span class="suit">♥</span></div>
+      </div>
+    </div>
+
+    <!-- 5. COLOR -->
+    <div class="hand-card">
+      <div class="hand-info">
+        <div class="rank-number">5</div>
+        <div class="hand-details">
+          <h3>Color (Flush)</h3>
+          <p>5 cartas del mismo palo (no seguidas)</p>
+        </div>
+      </div>
+      <div class="cards-display">
+        <div class="mini-card red">A<span class="suit">♦</span></div>
+        <div class="mini-card red">J<span class="suit">♦</span></div>
+        <div class="mini-card red">8<span class="suit">♦</span></div>
+        <div class="mini-card red">6<span class="suit">♦</span></div>
+        <div class="mini-card red">3<span class="suit">♦</span></div>
+      </div>
+    </div>
+
+    <!-- 6. ESCALERA -->
+    <div class="hand-card">
+      <div class="hand-info">
+        <div class="rank-number">6</div>
+        <div class="hand-details">
+          <h3>Escalera (Straight)</h3>
+          <p>5 cartas consecutivas (distinto palo)</p>
+        </div>
+      </div>
+      <div class="cards-display">
+        <div class="mini-card black">10<span class="suit">♠</span></div>
+        <div class="mini-card red">9<span class="suit">♥</span></div>
+        <div class="mini-card red">8<span class="suit">♦</span></div>
+        <div class="mini-card black">7<span class="suit">♣</span></div>
+        <div class="mini-card red">6<span class="suit">♥</span></div>
+      </div>
+    </div>
+
+    <!-- 7. TRÍO -->
+    <div class="hand-card">
+      <div class="hand-info">
+        <div class="rank-number">7</div>
+        <div class="hand-details">
+          <h3>Trío (Three of a Kind)</h3>
+          <p>3 cartas del mismo valor</p>
+        </div>
+      </div>
+      <div class="cards-display">
+        <div class="mini-card red">Q<span class="suit">♥</span></div>
+        <div class="mini-card black">Q<span class="suit">♠</span></div>
+        <div class="mini-card red">Q<span class="suit">♦</span></div>
+        <div class="mini-card black">9<span class="suit">♣</span></div>
+        <div class="mini-card red">2<span class="suit">♥</span></div>
+      </div>
+    </div>
+
+    <!-- 8. DOBLE PAREJA -->
+    <div class="hand-card">
+      <div class="hand-info">
+        <div class="rank-number">8</div>
+        <div class="hand-details">
+          <h3>Doble Pareja (Two Pair)</h3>
+          <p>2 parejas diferentes</p>
+        </div>
+      </div>
+      <div class="cards-display">
+        <div class="mini-card black">A<span class="suit">♠</span></div>
+        <div class="mini-card red">A<span class="suit">♥</span></div>
+        <div class="mini-card red">8<span class="suit">♦</span></div>
+        <div class="mini-card black">8<span class="suit">♣</span></div>
+        <div class="mini-card black">5<span class="suit">♠</span></div>
+      </div>
+    </div>
+
+    <!-- 9. PAREJA -->
+    <div class="hand-card">
+      <div class="hand-info">
+        <div class="rank-number">9</div>
+        <div class="hand-details">
+          <h3>Pareja (One Pair)</h3>
+          <p>2 cartas del mismo valor</p>
+        </div>
+      </div>
+      <div class="cards-display">
+        <div class="mini-card red">10<span class="suit">♦</span></div>
+        <div class="mini-card black">10<span class="suit">♣</span></div>
+        <div class="mini-card black">K<span class="suit">♠</span></div>
+        <div class="mini-card red">4<span class="suit">♥</span></div>
+        <div class="mini-card red">2<span class="suit">♦</span></div>
+      </div>
+    </div>
+
+    <!-- 10. CARTA ALTA -->
+    <div class="hand-card">
+      <div class="hand-info">
+        <div class="rank-number" style="color:var(--text-sub);">10</div>
+        <div class="hand-details">
+          <h3>Carta Alta (High Card)</h3>
+          <p>La carta más alta de la mano</p>
+        </div>
+      </div>
+      <div class="cards-display">
+        <div class="mini-card red">A<span class="suit">♠</span></div>
+        <div class="mini-card red">J<span class="suit">♦</span></div>
+        <div class="mini-card black">8<span class="suit">♣</span></div>
+        <div class="mini-card red">6<span class="suit">♥</span></div>
+        <div class="mini-card black">2<span class="suit">♠</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    CASH DRAKE SUITE • MANTÉN EL FOCO EN LAS MESAS
+  </footer>
+
+</body>
+</html>
