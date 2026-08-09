@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulador Pro - Cash 6-Max</title>
+  <title>Simulador GTO Pro - Estilo PokerSnowie</title>
   <style>
     :root {
       --bg-color: #0f172a;
@@ -36,7 +36,7 @@
     .nav-links { display: flex; justify-content: center; gap: 12px; margin-top: 4px; }
     .nav-link { font-size: 0.75rem; color: var(--accent); text-decoration: none; font-weight: bold; }
 
-    /* PANEL DE CONFIGURACIÓN DEL ENTRENAMIENTO */
+    /* PANEL CONFIGURACIÓN */
     .config-bar {
       display: flex; gap: 6px; width: 100%; max-width: 550px;
       margin-bottom: 8px; background: var(--card-bg); padding: 6px;
@@ -50,7 +50,7 @@
       color: #fff; padding: 4px; font-size: 0.75rem; border-radius: 4px; font-weight: bold;
     }
 
-    /* MESA DE PÓKER */
+    /* MESA DE PÓKER DE ALTA DEFINICIÓN */
     .table-container {
       width: 100%; max-width: 550px; height: 250px;
       background: radial-gradient(circle, var(--felt-green) 0%, var(--felt-dark) 100%);
@@ -60,13 +60,14 @@
     }
 
     .player-seat {
-      position: absolute; width: 60px; height: 42px; background: #1e293b;
+      position: absolute; width: 62px; height: 42px; background: #1e293b;
       border: 2px solid var(--border-color); border-radius: 6px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       font-size: 0.65rem; font-weight: bold; color: #cbd5e1;
     }
 
     .player-seat.hero { border-color: var(--accent); box-shadow: 0 0 8px var(--accent); }
+    .player-seat.villain { border-color: var(--danger); }
 
     .seat-utg { top: 8px; left: 15%; }
     .seat-mp  { top: 8px; right: 15%; }
@@ -75,7 +76,12 @@
     .seat-sb  { bottom: 8px; left: 25%; }
     .seat-bb  { top: 100px; left: 5px; }
 
-    .board-cards { display: flex; gap: 4px; margin-bottom: 6px; }
+    .pot-display {
+      position: absolute; top: 75px; background: rgba(0,0,0,0.6);
+      padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: bold; color: #f59e0b;
+    }
+
+    .board-cards { display: flex; gap: 4px; margin-bottom: 4px; }
     .hero-hand { display: flex; gap: 4px; margin-top: 2px; }
 
     .card {
@@ -117,42 +123,43 @@
 <body>
 
   <header>
-    <h1>♠️ Entrenador Pro & Simulador Táctico</h1>
+    <h1>♠️ Entrenador GTO Snowie - Cash 6-Max</h1>
     <div class="nav-links">
       <a href="index.html" class="nav-link">← Visor de Juego</a>
       <a href="estudio.html" class="nav-link">Centro de Estudio →</a>
     </div>
   </header>
 
-  <!-- SELECTORES DE MODO Y FOCO -->
+  <!-- CONFIGURACIÓN DE ESCENARIO -->
   <div class="config-bar">
     <div class="config-group">
-      <label>Estrategia / Filosofía:</label>
+      <label>Motor de Análisis:</label>
       <select id="mode-select" onchange="generateScenario()">
         <option value="ABC">🛡️ Estrategia ABC (Microlímites)</option>
-        <option value="GTO">🧠 Teórico / GTO Wizard Mode</option>
-        <option value="FISH">🐟 Explotativo vs Fish Pasivo</option>
+        <option value="SNOWIE">🤖 Algoritmo GTO / PokerSnowie</option>
       </select>
     </div>
     <div class="config-group">
-      <label>Enfoque de Juego:</label>
-      <select id="focus-select" onchange="generateScenario()">
-        <option value="ALL">Mezclado (Preflop + Postflop)</option>
-        <option value="PREFLOP">Solo Preflop (OR & Defensas)</option>
-        <option value="POSTFLOP">Solo Postflop (CB & Texturas)</option>
+      <label>Estructura de Bote:</label>
+      <select id="pot-type-select" onchange="generateScenario()">
+        <option value="MIX">Mezclado (Todos los botes)</option>
+        <option value="OR">Bote Abierto (OR Pot)</option>
+        <option value="3BET">Bote 3-Bet / Resubido</option>
       </select>
     </div>
   </div>
 
-  <!-- MARCADOR -->
+  <!-- MARCADOR DE RENDIMIENTO SNOWIE -->
   <div class="score-bar">
     <span>Aciertos: <span id="sc-ok" style="color:var(--success);">0</span></span>
-    <span>Fallos: <span id="sc-fail" style="color:var(--danger);">0</span></span>
-    <span>Racha: <span id="sc-streak" style="color:var(--warning);">0</span> 🔥</span>
+    <span>Inexactitudes: <span id="sc-warn" style="color:var(--warning);">0</span></span>
+    <span>Blunders: <span id="sc-fail" style="color:var(--danger);">0</span></span>
   </div>
 
   <!-- MESA VIRTUAL -->
   <div class="table-container">
+    <div class="pot-display" id="pot-size-display">Bote: $0.00</div>
+
     <div class="player-seat seat-utg" id="seat-UTG">UTG</div>
     <div class="player-seat seat-mp"  id="seat-MP">MP</div>
     <div class="player-seat seat-co"  id="seat-CO">CO</div>
@@ -169,7 +176,7 @@
     <div class="situation-text" id="situation-desc">Cargando situación...</div>
     <div class="action-buttons" id="action-opts"></div>
     <div class="feedback-box" id="feedback"></div>
-    <button class="act-btn" style="width:100%; margin-top:8px; background:var(--accent); color:#000;" onclick="generateScenario()">Siguiente Escenario ➔</button>
+    <button class="act-btn" style="width:100%; margin-top:8px; background:var(--accent); color:#000;" onclick="generateScenario()">Siguiente Situación ➔</button>
   </div>
 
   <script>
@@ -180,7 +187,7 @@
 
     let db = null;
     let currentScenario = null;
-    let scoreOK = 0, scoreFail = 0, streak = 0;
+    let scoreOK = 0, scoreWarn = 0, scoreFail = 0;
 
     function loadDatabase() {
       const saved = localStorage.getItem('poker_ranges_v2');
@@ -212,95 +219,67 @@
 
     function generateScenario() {
       document.getElementById('feedback').style.display = 'none';
-      document.querySelectorAll('.player-seat').forEach(s => s.classList.remove('hero'));
+      document.querySelectorAll('.player-seat').forEach(s => s.classList.remove('hero', 'villain'));
 
-      const focus = document.getElementById('focus-select').value;
-      let isPostflop = Math.random() > 0.5;
+      const potType = document.getElementById('pot-type-select').value;
+      let is3Bet = (potType === '3BET') || (potType === 'MIX' && Math.random() > 0.6);
 
-      if (focus === 'PREFLOP') isPostflop = false;
-      if (focus === 'POSTFLOP') isPostflop = true;
-
-      if (!isPostflop || !db) {
-        generatePreflopScenario();
-      } else {
-        generatePostflopScenario();
-      }
+      if (is3Bet) generate3BetScenario();
+      else generateStandardScenario();
     }
 
-    function generatePreflopScenario() {
+    function generateStandardScenario() {
       document.getElementById('table-board').innerHTML = '';
-      const positions = ['UTG', 'MP', 'CO', 'BU'];
-      const heroPos = positions[Math.floor(Math.random() * positions.length)];
-
+      document.getElementById('pot-size-display').innerText = 'Bote: $0.07 (OR 3.5bb)';
+      
+      const heroPos = ['UTG', 'MP', 'CO', 'BU'][Math.floor(Math.random() * 4)];
       const c1 = getRandomCard(); const c2 = getRandomCard([c1]);
       const combo = getComboName(c1, c2);
 
       document.getElementById('hero-cards').innerHTML = renderCardHTML(c1) + renderCardHTML(c2);
       document.getElementById(`seat-${heroPos}`).classList.add('hero');
 
-      const mode = document.getElementById('mode-select').value;
       let expectedAction = (db && db.OR && db.OR[heroPos] && db.OR[heroPos][combo]) || 'fold';
 
-      let explainText = `Según tu estrategia ABC, el rango asignado para <b>${combo}</b> en ${heroPos} es ${expectedAction.toUpperCase()}.`;
-
-      if (mode === 'FISH' && expectedAction === 'or') {
-        explainText += ` Contra un Fish Pasivo, mantén el Open Raise pero prepárate para hacer apuestas por valor más grandes postflop.`;
-      }
-
       currentScenario = {
-        type: 'PREFLOP', heroPos, combo, expectedAction, explainText,
-        desc: `[Modo: ${mode}] Estás en <b>${heroPos}</b>. Nadie ha abierto la mano. ¿Acción con <b>${combo}</b>?`
+        type: 'PREFLOP', combo, expectedAction,
+        desc: `Bote Estándar (OR). Estás en <b>${heroPos}</b> sin acción previa. ¿Decisión con <b>${combo}</b>?`
       };
 
       document.getElementById('situation-desc').innerHTML = currentScenario.desc;
       document.getElementById('action-opts').innerHTML = `
         <button class="act-btn" onclick="checkAnswer('or')">Open Raise</button>
         <button class="act-btn" onclick="checkAnswer('bet4')">4-Bet Value</button>
-        <button class="act-btn" onclick="checkAnswer('call3bet')">Call vs 3Bet</button>
         <button class="act-btn" onclick="checkAnswer('fold')">Fold</button>
       `;
     }
 
-    function generatePostflopScenario() {
+    function generate3BetScenario() {
+      document.getElementById('table-board').innerHTML = '';
+      document.getElementById('pot-size-display').innerText = 'Bote: $0.24 (3-Bet Pot)';
+
+      const villainPos = 'CO';
+      const heroPos = 'BU';
+
       const c1 = getRandomCard(); const c2 = getRandomCard([c1]);
-      const flop1 = getRandomCard([c1, c2]);
-      const flop2 = getRandomCard([c1, c2, flop1]);
-      const flop3 = getRandomCard([c1, c2, flop1, flop2]);
-
       const combo = getComboName(c1, c2);
+
       document.getElementById('hero-cards').innerHTML = renderCardHTML(c1) + renderCardHTML(c2);
-      document.getElementById('table-board').innerHTML = renderCardHTML(flop1) + renderCardHTML(flop2) + renderCardHTML(flop3);
-      document.getElementById('seat-BU').classList.add('hero');
+      document.getElementById(`seat-${villainPos}`).classList.add('villain');
+      document.getElementById(`seat-${heroPos}`).classList.add('hero');
 
-      const flopVals = [flop1.val, flop2.val, flop3.val].sort((a,b)=>b-a);
-      const isHighCard = flopVals[0] >= 11;
-      const isPaired = (flopVals[0] === flopVals[1] || flopVals[1] === flopVals[2]);
-      const isMonotone = (flop1.s === flop2.s && flop2.s === flop3.s);
-
-      const mode = document.getElementById('mode-select').value;
-      let allowBluff = isHighCard || isPaired || isMonotone;
-
-      let explainText = "";
-      if (mode === 'FISH') {
-        allowBluff = false;
-        explainText = "<b>Ajuste Explotativo vs Fish:</b> Eliminamos las C-Bets de farol puro. Los recreacionales pagan demasiado, así que solo apostamos por valor o proyectos reales.";
-      } else if (mode === 'GTO') {
-        explainText = "<b>En GTO Teórico:</b> Se busca balancear los faroles con sizing pequeño (1/3 Pot) en boards secos para no quedar desprotegido.";
-      } else {
-        explainText = "<b>Estrategia ABC:</b> C-Bet de Farol permitida solo en boards AXX, KXX, QXX, JXX, Doblados o Monocolor.";
-      }
-
-      const expectedAction = allowBluff ? 'cb_bluff' : 'check_fold';
+      let expectedAction = (db && db['3BET'] && db['3BET']['vsCOBU'] && db['3BET']['vsCOBU'][combo]) || 'fold';
 
       currentScenario = {
-        type: 'POSTFLOP', combo, expectedAction, explainText,
-        desc: `[Modo: ${mode}] Abriste en BTN y pagó la BB. No conectaste nada. ¿Haces C-Bet de Farol?`
+        type: '3BET', combo, expectedAction,
+        desc: `<b>${villainPos}</b> hace Open Raise. Estás en <b>${heroPos}</b> con <b>${combo}</b>. ¿Cómo respondes?`
       };
 
       document.getElementById('situation-desc').innerHTML = currentScenario.desc;
       document.getElementById('action-opts').innerHTML = `
-        <button class="act-btn" onclick="checkAnswer('cb_bluff')">Sí, C-Bet de Farol</button>
-        <button class="act-btn" onclick="checkAnswer('check_fold')">No, Check / Fold</button>
+        <button class="act-btn" onclick="checkAnswer('bet3')">3-Bet</button>
+        <button class="act-btn" onclick="checkAnswer('cc')">Cold Call</button>
+        <button class="act-btn" onclick="checkAnswer('fold')">Fold</button>
       `;
     }
 
@@ -308,37 +287,36 @@
       const fb = document.getElementById('feedback');
       fb.style.display = 'block';
 
-      let isCorrect = false;
-      if (currentScenario.type === 'PREFLOP') {
-        isCorrect = (userAction === currentScenario.expectedAction) || 
-                    (userAction === 'or' && currentScenario.expectedAction !== 'fold');
-      } else {
-        isCorrect = (userAction === currentScenario.expectedAction);
-      }
+      const isExact = (userAction === currentScenario.expectedAction) || 
+                      (userAction === 'or' && currentScenario.expectedAction !== 'fold');
 
-      if (isCorrect) {
-        scoreOK++; streak++;
+      if (isExact) {
+        scoreOK++;
         fb.style.background = 'rgba(34, 197, 94, 0.2)';
         fb.style.border = '1px solid var(--success)';
-        fb.innerHTML = `<b>¡CORRECTO!</b> ${currentScenario.explainText}`;
-      } else {
-        scoreFail++; streak = 0;
+        fb.innerHTML = `<b>🟢 ACIERTO OPTIMO (GTO 0.0 EV Loss):</b> ${getActionLabel(userAction)} es la jugada correcta en tu rango.`;
+      } else if (userAction !== 'fold' && currentScenario.expectedAction === 'fold') {
+        scoreFail++;
         fb.style.background = 'rgba(239, 68, 68, 0.2)';
         fb.style.border = '1px solid var(--danger)';
-        fb.innerHTML = `<b>INCORRECTO.</b> La jugada correcta era: <b>${getActionLabel(currentScenario.expectedAction)}</b>.<br>${currentScenario.explainText}`;
+        fb.innerHTML = `<b>🔴 GRAVE ERROR / BLUNDER:</b> Jugar <b>${currentScenario.combo}</b> aquí destruye tu EV. La jugada óptima era <b>FOLD</b>.`;
+      } else {
+        scoreWarn++;
+        fb.style.background = 'rgba(245, 158, 11, 0.2)';
+        fb.style.border = '1px solid var(--warning)';
+        fb.innerHTML = `<b>🟡 INEXACTITUD (Inaccuracy):</b> La jugada teórica preferida era <b>${getActionLabel(currentScenario.expectedAction)}</b>.`;
       }
 
       document.getElementById('sc-ok').innerText = scoreOK;
+      document.getElementById('sc-warn').innerText = scoreWarn;
       document.getElementById('sc-fail').innerText = scoreFail;
-      document.getElementById('sc-streak').innerText = streak;
     }
 
     function getActionLabel(act) {
       if(act === 'or') return 'Open Raise';
+      if(act === 'bet3') return '3-Bet';
+      if(act === 'cc') return 'Cold Call';
       if(act === 'bet4') return '4-Bet Value';
-      if(act === 'call3bet') return 'Call vs 3Bet';
-      if(act === 'cb_bluff') return 'C-Bet de Farol';
-      if(act === 'check_fold') return 'Check / Fold';
       return 'Fold';
     }
 
